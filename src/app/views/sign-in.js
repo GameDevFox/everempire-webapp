@@ -11,21 +11,21 @@ export default class SignIn extends Component {
       password: 'password'
     };
 
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleRegister = this.handleRegister.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
+    this.onPasswordChange = this.onPasswordChange.bind(this);
+    this.onRegister = this.onRegister.bind(this);
+    this.onLogin = this.onLogin.bind(this);
   }
 
-  handleEmailChange(event) {
+  onEmailChange(event) {
     this.setState({email: event.target.value});
   }
 
-  handlePasswordChange(event) {
+  onPasswordChange(event) {
     this.setState({password: event.target.value});
   }
 
-  handleRegister() {
+  onRegister() {
     $.auth.emailSignUp({
       email: this.state.email,
       password: this.state.password,
@@ -33,7 +33,7 @@ export default class SignIn extends Component {
     });
   }
 
-  handleLogin() {
+  onLogin() {
     console.log('Login', this.state.email, this.state.password);
     $.auth.emailSignIn({
       email: this.state.email,
@@ -67,16 +67,16 @@ export default class SignIn extends Component {
 
         <div className="email">
           <label htmlFor="email">Email</label>
-          <input id="email" type="text" value={this.state.email} onChange={this.handleEmailChange}/>
+          <input id="email" type="text" value={this.state.email} onChange={this.onEmailChange}/>
         </div>
 
         <div className="password">
           <label htmlFor="password">Password</label>
-          <input id="password" type="text" value={this.state.password} onChange={this.handlePasswordChange}/>
+          <input id="password" type="text" value={this.state.password} onChange={this.onPasswordChange}/>
         </div>
 
-        <button onClick={this.handleRegister}>Register</button>
-        <button onClick={this.handleLogin}>Login</button>
+        <button onClick={this.onRegister}>Register</button>
+        <button onClick={this.onLogin}>Login</button>
       </div>
     );
   }

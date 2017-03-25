@@ -6,10 +6,10 @@ export default class LogoutWidget extends Component {
   constructor() {
     super();
 
-    this.handleLogout = this.handleLogout.bind(this);
+    this.onLogout = this.onLogout.bind(this);
   }
 
-  handleLogout() {
+  onLogout() {
     $.auth.signOut();
       // .then(() => {
       //   router.push('/sign-in');
@@ -19,7 +19,7 @@ export default class LogoutWidget extends Component {
   render() {
     return (
       <div className="logout-widget">
-        <button onClick={this.handleLogout}>Logout</button>
+        <button onClick={this.onLogout}>Logout</button>
       </div>
     );
   }
