@@ -2,9 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router, Route, browserHistory} from 'react-router';
 
-import Root from './app/views/root';
-import SignIn from './app/views/sign-in';
-import Worlds from './app/views/worlds';
+import {Root, SignIn, Worlds} from './app/factory';
 
 import './index.scss';
 

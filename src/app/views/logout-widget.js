@@ -1,16 +1,14 @@
 import React, {Component} from 'react';
 
-import {$} from '../services/my-query';
-
 export default class LogoutWidget extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.onLogout = this.onLogout.bind(this);
   }
 
   onLogout() {
-    $.auth.signOut();
+    this.signOut();
       // .then(() => {
       //   router.push('/sign-in');
       // });

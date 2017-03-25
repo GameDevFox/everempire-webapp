@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-import {$} from '../services/my-query';
-
 export default class SignIn extends Component {
   constructor() {
     super();
@@ -26,7 +24,7 @@ export default class SignIn extends Component {
   }
 
   onRegister() {
-    $.auth.emailSignUp({
+    this.auth.emailSignUp({
       email: this.state.email,
       password: this.state.password,
       password_confirmation: this.state.password // eslint-disable-line camelcase
@@ -35,7 +33,7 @@ export default class SignIn extends Component {
 
   onLogin() {
     console.log('Login', this.state.email, this.state.password);
-    $.auth.emailSignIn({
+    this.auth.emailSignIn({
       email: this.state.email,
       password: this.state.password
     })

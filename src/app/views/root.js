@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 
-import LogoutWidget from './logout-widget';
-
 class Root extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       site: 'EverEmpire',
@@ -16,7 +14,7 @@ class Root extends Component {
   }
 
   render() {
-    window.props = this.props;
+    const {LogoutWidget} = this;
 
     return (
       <div>
@@ -25,7 +23,7 @@ class Root extends Component {
         <div className="user">
           Hello, <b>{this.state.user.email}</b>
         </div>
-        <LogoutWidget/>
+        <LogoutWidget ClassC="Last" ClassD="One"/>
 
         <div><Link to="/">Home</Link></div>
         <div><Link to="/worlds">Worlds</Link></div>

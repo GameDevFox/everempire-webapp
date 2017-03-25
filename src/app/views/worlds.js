@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
 
-import $ from 'jquery';
-import EmpireService from '../services/empire-service';
-
 export default class Worlds extends Component {
   constructor() {
     super();
@@ -13,8 +10,7 @@ export default class Worlds extends Component {
   }
 
   componentWillMount() {
-    const empireService = new EmpireService($, 'http://localhost:3000');
-    empireService.getWorlds()
+    this.empireService.getWorlds()
       .then(worlds => this.setState({worlds}));
   }
 
