@@ -11,6 +11,13 @@
   "parser": "babel-eslint",
 
   "rules": {
+    "keyword-spacing": ["error", {
+      "overrides": {
+        "for": { "after": false },
+        "if": { "after": false },
+        "while": { "after": false }
+      }
+    }],
     "react/jsx-handler-names": ["error", {
         "eventHandlerPrefix": "on"
     }]

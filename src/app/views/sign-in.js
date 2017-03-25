@@ -53,7 +53,7 @@ export default class SignIn extends Component {
 
   render() {
     let errorListView = null;
-    if (this.state.errors.length > 0) {
+    if(this.state.errors.length > 0) {
       const list = this.state.errors.map((error, index) => (<li key={index} className="error">{error}</li>));
       errorListView = (<ul>{list}</ul>);
     }
