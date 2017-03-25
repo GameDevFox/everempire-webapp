@@ -1,22 +1,21 @@
 class EmpireService {
 
-  constructor($, apiUrl) {
-    this.$ = $;
-    this.apiUrl = apiUrl;
+  constructor(authP) {
+    this.authP = authP;
   }
 
   get(url) {
-    return this.$.getJSON(this.apiUrl + url);
+    return this.authP.then($ => $.getJSON($.auth.getApiUrl() + url));
   }
 
   post(url, data) {
-    return this.$.post(this.apiUrl + url, data);
+    return this.authP.then($ => $.post($.auth.getApiUrl() + url, data));
   }
 
   delete(url) {
-    return this.$.ajax(this.apiUrl + url, {
+    return this.authP.then($ => $.ajax($.auth.getApiUrl() + url, {
       method: 'DELETE'
-    });
+    }));
   }
 
   getWorlds() {

@@ -8,10 +8,8 @@ export default class LogoutWidget extends Component {
   }
 
   onLogout() {
-    this.signOut();
-      // .then(() => {
-      //   router.push('/sign-in');
-      // });
+    this.authP.then($ => $.auth.signOut())
+      .then(() => this.browserHistory.push('/sign-in'));
   }
 
   render() {

@@ -23,7 +23,7 @@ class Root extends Component {
         <div className="user">
           Hello, <b>{this.state.user.email}</b>
         </div>
-        <LogoutWidget ClassC="Last" ClassD="One"/>
+        <LogoutWidget/>
 
         <div><Link to="/">Home</Link></div>
         <div><Link to="/worlds">Worlds</Link></div>

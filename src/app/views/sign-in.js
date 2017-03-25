@@ -24,29 +24,31 @@ export default class SignIn extends Component {
   }
 
   onRegister() {
-    this.auth.emailSignUp({
+    this.authP.then($ => $.auth.emailSignUp({
       email: this.state.email,
       password: this.state.password,
       password_confirmation: this.state.password // eslint-disable-line camelcase
-    });
+    }));
   }
 
   onLogin() {
-    console.log('Login', this.state.email, this.state.password);
-    this.auth.emailSignIn({
-      email: this.state.email,
-      password: this.state.password
-    })
-      .then(response => {
-        console.log(`Login succeeded for ${response.data.email}`);
-        this.setState({errors: []});
-
-        // console.log(router);
-        // router.push('/');
-      }, response => {
-        console.log(response);
-        this.setState({errors: response.data.errors});
+    this.authP.then($ => {
+      console.log('Login', this.state.email, this.state.password);
+      return $.auth.emailSignIn({
+        email: this.state.email,
+        password: this.state.password
       });
+    }).then(response => {
+      console.log(`Login succeeded for ${response.data.email}`);
+
+      this.setState({errors: []});
+      this.browserHistory.push('/');
+    }, response => {
+      console.log('Oops...');
+      console.log(response);
+
+      this.setState({errors: response.data.errors});
+    });
   }
 
   render() {
