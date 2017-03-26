@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 
 import _ from 'lodash';
+import {titleCase} from 'change-case';
 
 export default class TableList extends Component {
   buildHeader(cols) {
-    const headerCells = _.map(cols, column => {
-      return <th key={column[0]}>{column[0]}</th>;
+    const headerCells = _.map(cols, (column, key) => {
+      if(typeof column === 'string')
+        return <th key={key}>{titleCase(column)}</th>;
+
+      return <th key={key}>{column[0]}</th>;
     });
     return <tr>{headerCells}</tr>;
   }
@@ -13,8 +17,9 @@ export default class TableList extends Component {
   buildRows(rows, cols) {
     const tableRows = _.map(rows, (item, itemKey) => {
       const data = _.map(cols, (column, columnKey) => {
-        const propName = column[1];
+        const propName = (typeof column === 'string') ? column : column[1];
         const prop = item[propName];
+
         return <td key={columnKey}>{prop}</td>;
       });
       return <tr key={itemKey}>{data}</tr>;
