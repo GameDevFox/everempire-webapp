@@ -4,7 +4,7 @@ import authP from './my-query';
 import EmpireService from '../services/empire-service';
 import bind from '../utils/class-bind';
 
-import LogoutWidgetB from '../views/logout-widget';
+import LogoutWidgetB from '../views/widgets/logout-widget';
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
 import WorldsB from '../views/worlds';
