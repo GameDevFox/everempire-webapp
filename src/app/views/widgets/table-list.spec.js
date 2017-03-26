@@ -11,13 +11,16 @@ describe('TableList', () => {
 
   describe('with simple columns', () => {
     beforeEach(() => {
-      const template = [
+      const cols = [
         ['Name', 'name'],
         ['Gold', 'gold']
       ];
+      const rows = [
+        {name: 'Adam', gold: 100},
+        {name: 'Baron', gold: 200}
+      ];
 
-      const list = [{name: 'Adam', gold: 100}, {name: 'Baron', gold: 200}];
-      table = renderToElement(<TableList list={list} template={template}/>);
+      table = renderToElement(<TableList rows={rows} cols={cols}/>);
     });
 
     it('should generate proper headers', () => {
