@@ -6,8 +6,11 @@ import {titleCase} from 'change-case';
 export default class TableList extends Component {
   buildHeader(cols) {
     const headerCells = _.map(cols, (column, key) => {
-      if(typeof column === 'string')
-        return <th key={key}>{titleCase(column)}</th>;
+      if(typeof column === 'string') {
+        const columnParts = column.split('.');
+        const header = titleCase(columnParts[columnParts.length - 1]);
+        return <th key={key}>{header}</th>;
+      }
 
       return <th key={key}>{column[0]}</th>;
     });
@@ -18,7 +21,7 @@ export default class TableList extends Component {
     const tableRows = _.map(rows, (item, itemKey) => {
       const data = _.map(cols, (column, columnKey) => {
         const propName = (typeof column === 'string') ? column : column[1];
-        const prop = item[propName];
+        const prop = _.get(item, propName);
 
         return <td key={columnKey}>{prop}</td>;
       });

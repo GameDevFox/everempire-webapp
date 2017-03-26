@@ -9,32 +9,48 @@ import TableList from './table-list';
 describe('TableList', () => {
   let table;
   const rows = [
-    {name: 'Adam', gold: 100},
-    {name: 'Baron', gold: 200}
+    {name: 'Adam', gold: 100, data: {email: 'adam@gmail.com'}, colors: ['white', 'red']},
+    {name: 'Baron', gold: 200, data: {email: 'baron@everempire.com'}, colors: ['blue', 'black']}
   ];
 
   describe('with string columns', () => {
+    const cols = ['name', 'gold', 'data.email', 'colors[1]'];
+
     beforeEach(() => {
-      const cols = ['name', 'gold'];
       table = renderToElement(<TableList rows={rows} cols={cols}/>);
     });
 
-    shouldGenerateProperHeaders(['Name', 'Gold']);
-    shouldGenerateProperRows([['Adam', '100'], ['Baron', '200']]);
+    shouldGenerateProperHeaders(['Name', 'Gold', 'Email', 'Colors 1']);
+    shouldGenerateProperRows([['Adam', '100', 'adam@gmail.com', 'red'], ['Baron', '200', 'baron@everempire.com', 'black']]);
   });
 
-  describe('with simple columns', () => {
-    beforeEach(() => {
-      const cols = [
-        'gold',
-        ['Player Name', 'name']
-      ];
+  describe('with simple params', () => {
+    const cols = [
+      'gold',
+      ['Player Name', 'name']
+    ];
 
+    beforeEach(() => {
       table = renderToElement(<TableList rows={rows} cols={cols}/>);
     });
 
     shouldGenerateProperHeaders(['Gold', 'Player Name']);
     shouldGenerateProperRows([['100', 'Adam'], ['200', 'Baron']]);
+  });
+
+  describe('with complex params', () => {
+    const cols = [
+      'name',
+      ['Email', 'data.email'],
+      ['First Color', 'colors[0]']
+    ];
+
+    beforeEach(() => {
+      table = renderToElement(<TableList rows={rows} cols={cols}/>);
+    });
+
+    shouldGenerateProperHeaders(['Name', 'Email', 'First Color']);
+    shouldGenerateProperRows([['Adam', 'adam@gmail.com', 'white'], ['Baron', 'baron@everempire.com', 'blue']]);
   });
 
   function shouldGenerateProperHeaders(data) {
