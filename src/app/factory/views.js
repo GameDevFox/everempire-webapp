@@ -13,7 +13,7 @@ const empireService = new EmpireService(authP);
 
 // Root
 const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
-const Root = bind(RootB, {LogoutWidget});
+const Root = bind(RootB, {authP, LogoutWidget});
 
 // SignIn
 const SignIn = bind(SignInB, {authP, browserHistory});

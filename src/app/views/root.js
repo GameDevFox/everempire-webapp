@@ -7,21 +7,29 @@ export default class Root extends Component {
 
     this.state = {
       site: 'EverEmpire',
-      user: {
-        email: 'email@domain.com'
-      }
+      user: {}
     };
+  }
+
+  componentWillMount() {
+    this.authP.then($ => {
+      const user = $.auth.user;
+      this.setState({user});
+    });
   }
 
   render() {
     const {LogoutWidget} = this;
+
+    const user = this.state.user;
+    const email = user.signedIn ? user.email : '...';
 
     return (
       <div>
         <h1>Welcome to {this.state.site}</h1>
 
         <div className="user">
-          Hello, <b>{this.state.user.email}</b>
+          Hello, <b>{email}</b>
         </div>
         <LogoutWidget/>
 

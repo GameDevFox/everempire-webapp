@@ -18,6 +18,10 @@ class EmpireService {
     }));
   }
 
+  getUser() {
+    return this.authP.then($ => $.auth.user);
+  }
+
   getWorlds() {
     return this.get('/worlds.json');
   }
