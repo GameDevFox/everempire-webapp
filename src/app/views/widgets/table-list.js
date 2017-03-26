@@ -3,43 +3,43 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 
 export default class TableList extends Component {
-  buildHeader(template) {
-    const thList = _.map(template, column => {
+  buildHeader(cols) {
+    const headerCells = _.map(cols, column => {
       return <th key={column[0]}>{column[0]}</th>;
     });
-    return <tr>{thList}</tr>;
+    return <tr>{headerCells}</tr>;
   }
 
-  buildRows(list, template) {
-    const rows = _.map(list, (item, itemKey) => {
-      const data = _.map(template, (column, columnKey) => {
+  buildRows(rows, cols) {
+    const tableRows = _.map(rows, (item, itemKey) => {
+      const data = _.map(cols, (column, columnKey) => {
         const propName = column[1];
         const prop = item[propName];
         return <td key={columnKey}>{prop}</td>;
       });
       return <tr key={itemKey}>{data}</tr>;
     });
-    return rows;
+    return tableRows;
   }
 
   render() {
-    const {list, template} = this.props;
+    const {rows, cols} = this.props;
 
-    const header = this.buildHeader(template);
-    const rows = this.buildRows(list, template);
+    const header = this.buildHeader(cols);
+    const tableRows = this.buildRows(rows, cols);
 
     return (
       <table>
         <thead>{header}</thead>
-        <tbody>{rows}</tbody>
+        <tbody>{tableRows}</tbody>
       </table>
     );
   }
 
   static get propTypes() {
     return {
-      template: React.PropTypes.array.isRequired,
-      list: React.PropTypes.array.isRequired
+      cols: React.PropTypes.array.isRequired,
+      rows: React.PropTypes.array.isRequired
     };
   }
 }
