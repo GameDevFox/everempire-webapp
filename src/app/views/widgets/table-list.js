@@ -20,8 +20,16 @@ export default class TableList extends Component {
   buildRows(rows, cols) {
     const tableRows = _.map(rows, (item, itemKey) => {
       const data = _.map(cols, (column, columnKey) => {
-        const propName = (typeof column === 'string') ? column : column[1];
-        const prop = _.get(item, propName);
+        let prop;
+        if(typeof column === 'string') {
+          prop = _.get(item, column);
+        } else if(typeof column[1] === 'string') {
+          prop = _.get(item, column[1]);
+        } else if(typeof column[1] === 'function') {
+          const func = column[1];
+          prop = func.call(item, item);
+        } else
+          throw new Error(`Invalid column definition at index ${columnKey}: ${column}`);
 
         return <td key={columnKey}>{prop}</td>;
       });

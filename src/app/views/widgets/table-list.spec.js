@@ -10,8 +10,15 @@ describe('TableList', () => {
   let table;
   const rows = [
     {name: 'Adam', gold: 100, data: {email: 'adam@gmail.com'}, colors: ['white', 'red']},
-    {name: 'Baron', gold: 200, data: {email: 'baron@everempire.com'}, colors: ['blue', 'black']}
+    {name: 'Baron', gold: 200, data: {email: 'baron@everempire.com'}, colors: ['blue', 'black', 'yellow']}
   ];
+
+  it('should throw error on invalid column definition', () => {
+    const cols = [12345, '<< '];
+    const buildTable = () => renderToElement(<TableList rows={rows} cols={cols}/>);
+
+    buildTable.should.throw('Invalid column definition at index 0: 12345');
+  });
 
   describe('with string columns', () => {
     const cols = ['name', 'gold', 'data.email', 'colors[1]'];
@@ -51,6 +58,25 @@ describe('TableList', () => {
 
     shouldGenerateProperHeaders(['Name', 'Email', 'First Color']);
     shouldGenerateProperRows([['Adam', 'adam@gmail.com', 'white'], ['Baron', 'baron@everempire.com', 'blue']]);
+  });
+
+  describe('with function params', () => {
+    const cols = [
+      'name',
+      ['Mail Server',
+        function() {
+          return this.data.email.split('@')[1];
+        }],
+      ['Last Color',
+        item => item.colors[item.colors.length - 1]]
+    ];
+
+    beforeEach(() => {
+      table = renderToElement(<TableList rows={rows} cols={cols}/>);
+    });
+
+    shouldGenerateProperHeaders(['Name', 'Mail Server', 'Last Color']);
+    shouldGenerateProperRows([['Adam', 'gmail.com', 'red'], ['Baron', 'everempire.com', 'yellow']]);
   });
 
   function shouldGenerateProperHeaders(data) {
