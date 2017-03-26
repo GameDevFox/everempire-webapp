@@ -1,15 +1,28 @@
 import React from 'react';
-import {Router, Route} from 'react-router';
+import {Router, Route, browserHistory} from 'react-router';
 
-import {Root, SignIn, Worlds, browserHistory} from './views';
+import authP from './my-query';
+
+import {Root, SignIn, Worlds} from './views';
+
+const enterHook = function(nextState, replace, callback) {
+  authP.then($ => {
+    if(nextState.location.pathname !== '/sign-in' && !$.auth.user.signedIn)
+      replace('/sign-in');
+    if(nextState.location.pathname === '/sign-in' && $.auth.user.signedIn)
+      replace('/');
+
+    callback();
+  });
+};
 
 // router
 const router = (
   <Router history={browserHistory}>
-    <Route path="/" component={Root}>
+    <Route exact path="/" component={Root} onEnter={enterHook}>
       <Route path="worlds" component={Worlds}/>
     </Route>
-    <Route path="/sign-in" component={SignIn}/>
+    <Route path="/sign-in" component={SignIn} onEnter={enterHook}/>
   </Router>
 );
 

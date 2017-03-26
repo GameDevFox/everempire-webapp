@@ -21,7 +21,7 @@ const SignIn = bind(SignInB, {authP, browserHistory});
 // Worlds
 const Worlds = bind(WorldsB, {empireService});
 
-export {Root, SignIn, Worlds, browserHistory};
+export {Root, SignIn, Worlds};
 
 // Move this to unit test
 // const LogoutWidgetB = bind(LogoutWidget, {ClassA: 'A', ClassB: 'B'});

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 
 export default class LogoutWidget extends Component {
-  constructor(props) {
-    super(props);
-
+  constructor() {
+    super();
     this.onLogout = this.onLogout.bind(this);
   }
 

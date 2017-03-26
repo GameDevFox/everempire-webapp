@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 
-class Root extends Component {
-  constructor(props) {
-    super(props);
+export default class Root extends Component {
+  constructor() {
+    super();
 
     this.state = {
       site: 'EverEmpire',
@@ -32,12 +32,10 @@ class Root extends Component {
       </div>
     );
   }
+
+  static get propTypes() {
+    return {
+      children: React.PropTypes.node
+    };
+  }
 }
-
-window.React = React;
-
-Root.propTypes = {
-  children: React.PropTypes.node
-};
-
-export default Root;
