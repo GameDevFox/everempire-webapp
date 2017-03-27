@@ -23,7 +23,7 @@ export default class Worlds extends Component {
           this.setState({world});
         });
     };
-    this.onDestroyWorld = worldId => {
+    this.onDestroyClick = worldId => {
       return () => {
         this.empireService.destroyWorld(worldId)
           .then(() => {
@@ -34,6 +34,18 @@ export default class Worlds extends Component {
       };
     };
     this.belongsToUser = world => (this.state.user.id === world.user.id);
+
+    this.worldColumns = [
+      'id',
+      'name',
+      ['User', 'user.email'],
+      ['Action', world => {
+        return this.belongsToUser(world) ?
+          <button onClick={this.onDestroyClick(world.id)}>
+            Destroy
+          </button> : null;
+      }]
+    ];
   }
 
   componentWillMount() {
@@ -47,38 +59,13 @@ export default class Worlds extends Component {
   }
 
   render() {
-    const tableRows = this.state.worlds.map(world => {
-      let destroyButton = null;
-      if(this.belongsToUser(world))
-        destroyButton = (
-          <button onClick={this.onDestroyWorld(world.id)}>
-            Destroy
-          </button>
-        );
-
-      return (
-        <tr key={world.id}>
-          <td>{world.id}</td>
-          <td>{world.name}</td>
-          <td>{world.user.email}</td>
-          <td>{destroyButton}</td>
-        </tr>
-      );
-    });
+    const {TableList} = this;
 
     return (
       <div className="worlds">
         <h2>World List</h2>
 
-        <table>
-          <thead><tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>User</th>
-            <th>Action</th>
-          </tr></thead>
-          <tbody>{tableRows}</tbody>
-        </table>
+        <TableList rows={this.state.worlds} cols={this.worldColumns}/>
 
         <input value={this.state.name} onChange={this.onNameChange}/>
         <button onClick={this.onCreateWorld}>Create</button>

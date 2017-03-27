@@ -1,13 +1,15 @@
 import {browserHistory} from 'react-router';
 
 import authP from './my-query';
-import EmpireService from '../services/empire-service';
 import bind from '../utils/class-bind';
+import EmpireService from '../services/empire-service';
 
-import LogoutWidgetB from '../views/widgets/logout-widget';
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
 import WorldsB from '../views/worlds';
+
+import LogoutWidgetB from '../views/widgets/logout-widget';
+import TableList from '../views/widgets/table-list';
 
 const empireService = new EmpireService(authP);
 
@@ -19,7 +21,7 @@ const Root = bind(RootB, {authP, LogoutWidget});
 const SignIn = bind(SignInB, {authP, browserHistory});
 
 // Worlds
-const Worlds = bind(WorldsB, {empireService});
+const Worlds = bind(WorldsB, {empireService, TableList});
 
 export {Root, SignIn, Worlds};
 
