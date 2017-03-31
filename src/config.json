@@ -1,4 +1,4 @@
 {
   "empireServiceUrl": "EMPIRE_SERVICE_URL",
-  "empireWebSocketUrl": "EMPIRE_WEB_SOCKET_URL"
+  "genesisUrl": "GENESIS_URL"
 }

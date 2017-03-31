@@ -2,7 +2,7 @@ const Commands = {
   AUTH: 'auth'
 };
 
-class EmpireClient {
+class GenesisService {
   connect(url) {
     console.log(`Connecting to ${url} ...`);
 
@@ -42,4 +42,4 @@ class EmpireClient {
   }
 }
 
-export default EmpireClient;
+export default GenesisService;

@@ -18,7 +18,7 @@ export default class Root extends Component {
     this.onMsgClick = () => {
       const message = this.state.message;
       console.log(message);
-      this.empireClient.cmd('set', {message});
+      this.genesisService.cmd('set', {message});
     };
   }
 
