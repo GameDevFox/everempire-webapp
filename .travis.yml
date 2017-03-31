@@ -5,6 +5,10 @@ node_js:
 services:
   - docker
 
+script:
+  - gulp test
+  - gulp
+
 after_success:
   - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${DOCKER_SERVER}
   - DOCKER_IMAGE=${DOCKER_REPO}/everempire-webapp:latest
