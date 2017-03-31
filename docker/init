@@ -1,0 +1,5 @@
+#!/bin/bash
+sed -i "s~EMPIRE_SERVICE_URL~${EMPIRE_SERVICE_URL}~" /usr/share/nginx/html/config.json
+sed -i "s~EMPIRE_WEB_SOCKET_URL~${EMPIRE_WEB_SOCKET_URL}~" /usr/share/nginx/html/config.json
+
+nginx -g 'daemon off;'

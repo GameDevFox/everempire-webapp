@@ -47,7 +47,7 @@ export default class SignIn extends Component {
       console.log('Oops...');
       console.log(response);
 
-      this.setState({errors: response.data.errors});
+      this.setState({errors: response.data.errors || []});
     });
   }
 

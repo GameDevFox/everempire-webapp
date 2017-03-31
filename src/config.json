@@ -1,4 +1,4 @@
 {
-  "empireWebSocketUrl": "EMPIRE_WEB_SOCKET_URL",
-  "empireServiceUrl": "EMPIRE_SERVICE_URL"
+  "empireServiceUrl": "EMPIRE_SERVICE_URL",
+  "empireWebSocketUrl": "EMPIRE_WEB_SOCKET_URL"
 }
