@@ -40,10 +40,15 @@ export default class Worlds extends Component {
       'name',
       ['User', 'user.email'],
       ['Action', world => {
-        return this.belongsToUser(world) ?
-          <button onClick={this.onDestroyClick(world.id)}>
+        const destroyButton = this.belongsToUser(world) ?
+          (<button onClick={this.onDestroyClick(world.id)}>
             Destroy
-          </button> : null;
+          </button>) : null;
+
+        return (<div>
+          <button>Connect</button>
+          {destroyButton}
+        </div>);
       }]
     ];
   }

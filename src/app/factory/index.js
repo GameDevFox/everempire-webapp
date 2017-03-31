@@ -1,9 +1,16 @@
 import React from 'react';
 import {Router, Route, browserHistory} from 'react-router';
 
-import authP from './my-query';
+import {authP} from './my-query';
 
 import {Root, SignIn, Worlds} from './views';
+
+authP.then($ => {
+  if($.auth.user.signedIn)
+    console.log(`User signed in as ${$.auth.user.email}`);
+  else
+    console.log('Not signed in ...');
+});
 
 const enterHook = function(nextState, replace, callback) {
   authP.then($ => {

@@ -7,7 +7,18 @@ export default class Root extends Component {
 
     this.state = {
       site: 'EverEmpire',
-      user: {}
+      user: {},
+      message: ''
+    };
+
+    this.onMsgChange = event => {
+      const message = event.target.value;
+      this.setState({message});
+    };
+    this.onMsgClick = () => {
+      const message = this.state.message;
+      console.log(message);
+      this.empireClient.cmd('set', {message});
     };
   }
 
@@ -27,6 +38,10 @@ export default class Root extends Component {
     return (
       <div>
         <h1>Welcome to {this.state.site}</h1>
+
+        <p>
+          <input onChange={this.onMsgChange}/><button onClick={this.onMsgClick}>Send</button>
+        </p>
 
         <div className="user">
           Hello, <b>{email}</b>

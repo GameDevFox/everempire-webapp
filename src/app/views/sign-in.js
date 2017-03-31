@@ -72,7 +72,7 @@ export default class SignIn extends Component {
 
         <div className="password">
           <label htmlFor="password">Password</label>
-          <input id="password" type="text" value={this.state.password} onChange={this.onPasswordChange}/>
+          <input id="password" type="password" value={this.state.password} onChange={this.onPasswordChange}/>
         </div>
 
         <button onClick={this.onRegister}>Register</button>

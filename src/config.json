@@ -1,3 +1,4 @@
 {
-  "everempireApiUrl": "EVEREMPIRE_API_URL"
+  "empireWebSocketUrl": "EMPIRE_WEB_SOCKET_URL",
+  "empireServiceUrl": "EMPIRE_SERVICE_URL"
 }

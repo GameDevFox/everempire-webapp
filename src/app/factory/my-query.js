@@ -1,22 +1,23 @@
 import $ from 'jquery';
 import 'j-toker';
 
-const authP = new Promise((resolve, reject) => {
-  $.getJSON('/config.json')
-    .then(config => {
-      console.log('Config:', config);
+import configP from './config';
 
-      $.auth
-        .configure({apiUrl: config.everempireApiUrl})
-        .then(() => resolve($), () => resolve($));
-    }, ...args => reject(...args));
+const authP = new Promise(resolve => {
+  configP.then(config => {
+    $.auth.configure({apiUrl: config.empireServiceUrl})
+      .then(() => resolve($), () => resolve($));
+  });
 });
 
-authP.then($ => {
-  if($.auth.user.signedIn)
-    console.log(`User signed in as ${$.auth.user.email}`);
-  else
-    console.log('Not signed in ...');
-});
+$.getAuthHeaders = function() {
+  const jQuery = this;
+  return authP.then(() => {
+    const authHeadersCookie = jQuery.cookie('authHeaders');
+    const authHeaders = authHeadersCookie ? JSON.parse(authHeadersCookie) : undefined;
+    return authHeaders;
+  });
+};
 
-export default authP;
+export default $;
+export {authP};
