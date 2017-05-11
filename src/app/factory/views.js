@@ -3,12 +3,15 @@ import {browserHistory} from 'react-router';
 import {authP} from './my-query';
 import bind from '../utils/class-bind';
 import configP from './config';
+
+import * as game from '../game/game';
+
 import EmpireService from '../services/empire-service';
 import GenesisService from '../services/genesis-service';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
-import Game from '../views/game';
+import GameB from '../views/game';
 import WorldsB from '../views/worlds';
 
 import LogoutWidgetB from '../views/widgets/logout-widget';
@@ -26,12 +29,13 @@ configP.then(config => {
 
 // Root
 const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
-const Root = bind(RootB, {authP, genesisService, LogoutWidget});
+const Root = bind(RootB, {authP, game, genesisService, LogoutWidget});
 
 // SignIn
 const SignIn = bind(SignInB, {authP, browserHistory});
 
-// Worlds
+// Views
+const Game = bind(GameB, {game});
 const Worlds = bind(WorldsB, {empireService, TableList});
 
 export {Root, SignIn, Game, Worlds};

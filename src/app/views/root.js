@@ -29,6 +29,10 @@ export default class Root extends Component {
     });
   }
 
+  componentDidMount() {
+    this.game.init('game');
+  }
+
   render() {
     const {LogoutWidget} = this;
 
@@ -37,6 +41,8 @@ export default class Root extends Component {
 
     return (
       <div>
+        <div id="hidden-game"/>
+
         <h1>Welcome to {this.state.site}</h1>
 
         <p>
