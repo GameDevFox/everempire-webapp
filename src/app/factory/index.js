@@ -3,7 +3,7 @@ import {Router, Route, browserHistory} from 'react-router';
 
 import {authP} from './my-query';
 
-import {Root, SignIn, Worlds} from './views';
+import {Root, SignIn, Game, Worlds} from './views';
 
 authP.then($ => {
   if($.auth.user.signedIn)
@@ -27,6 +27,7 @@ const enterHook = function(nextState, replace, callback) {
 const router = (
   <Router history={browserHistory}>
     <Route exact path="/" component={Root} onEnter={enterHook}>
+      <Route path="game" component={Game}/>
       <Route path="worlds" component={Worlds}/>
     </Route>
     <Route path="/sign-in" component={SignIn} onEnter={enterHook}/>

@@ -49,6 +49,7 @@ export default class Root extends Component {
         <LogoutWidget/>
 
         <div><Link to="/">Home</Link></div>
+        <div><Link to="/game">Game</Link></div>
         <div><Link to="/worlds">Worlds</Link></div>
 
         {this.props.children}

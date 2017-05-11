@@ -8,6 +8,7 @@ import GenesisService from '../services/genesis-service';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
+import Game from '../views/game';
 import WorldsB from '../views/worlds';
 
 import LogoutWidgetB from '../views/widgets/logout-widget';
@@ -33,4 +34,4 @@ const SignIn = bind(SignInB, {authP, browserHistory});
 // Worlds
 const Worlds = bind(WorldsB, {empireService, TableList});
 
-export {Root, SignIn, Worlds};
+export {Root, SignIn, Game, Worlds};
