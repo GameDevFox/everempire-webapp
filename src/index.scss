@@ -2,6 +2,28 @@ body {
   background-color: white;
 }
 
+.menu-bar {
+  color: white;
+  background-color: black;
+  padding: 5px;
+  margin-bottom: 10px;
+
+  display: flex;
+  flex-direction: row;
+
+  .menu {
+    flex-grow: 1;
+
+    & > * {
+      margin-left: 10px;
+    }
+  }
+
+  .logout-widget {
+    margin-left: 10px;
+  }
+}
+
 #hidden-game {
   display: none;
 }

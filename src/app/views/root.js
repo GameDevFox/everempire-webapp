@@ -43,20 +43,24 @@ export default class Root extends Component {
       <div>
         <div id="hidden-game"/>
 
-        <h1>Welcome to {this.state.site}</h1>
+        <div className="menu-bar">
+          <div>{this.state.site}</div>
+
+          <div className="menu">
+            <Link to="/">Home</Link>
+            <Link to="/game">Game</Link>
+            <Link to="/worlds">Worlds</Link>
+          </div>
+
+          <div className="user">
+            <b>{email}</b>
+            <LogoutWidget/>
+          </div>
+        </div>
 
         <p>
           <input onChange={this.onMsgChange}/><button onClick={this.onMsgClick}>Send</button>
         </p>
-
-        <div className="user">
-          Hello, <b>{email}</b>
-        </div>
-        <LogoutWidget/>
-
-        <div><Link to="/">Home</Link></div>
-        <div><Link to="/game">Game</Link></div>
-        <div><Link to="/worlds">Worlds</Link></div>
 
         {this.props.children}
       </div>

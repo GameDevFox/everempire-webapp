@@ -13,9 +13,9 @@ export default class LogoutWidget extends Component {
 
   render() {
     return (
-      <div className="logout-widget">
-        <button onClick={this.onLogout}>Logout</button>
-      </div>
+      <span className="logout-widget">
+        <a href="#" onClick={this.onLogout}>Logout</a>
+      </span>
     );
   }
 }
