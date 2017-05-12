@@ -1,9 +1,9 @@
 import React from 'react';
-import {Router, Route, browserHistory} from 'react-router';
+import {browserHistory, IndexRoute, Router, Route} from 'react-router';
 
 import {authP} from './my-query';
 
-import {Root, SignIn, Game, Worlds} from './views';
+import {Root, SignIn, Home, Game, Worlds} from './views';
 
 authP.then($ => {
   if($.auth.user.signedIn)
@@ -27,6 +27,7 @@ const enterHook = function(nextState, replace, callback) {
 const router = (
   <Router history={browserHistory}>
     <Route exact path="/" component={Root} onEnter={enterHook}>
+      <IndexRoute component={Home}/>
       <Route path="game" component={Game}/>
       <Route path="worlds" component={Worlds}/>
     </Route>

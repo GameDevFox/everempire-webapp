@@ -7,18 +7,7 @@ export default class Root extends Component {
 
     this.state = {
       site: 'EverEmpire',
-      user: {},
-      message: ''
-    };
-
-    this.onMsgChange = event => {
-      const message = event.target.value;
-      this.setState({message});
-    };
-    this.onMsgClick = () => {
-      const message = this.state.message;
-      console.log(message);
-      this.genesisService.cmd('set', {message});
+      user: {}
     };
   }
 
@@ -44,7 +33,7 @@ export default class Root extends Component {
         <div id="hidden-game"/>
 
         <div className="menu-bar">
-          <div>{this.state.site}</div>
+          <div className="site-name">{this.state.site}</div>
 
           <div className="menu">
             <Link to="/">Home</Link>
@@ -57,10 +46,6 @@ export default class Root extends Component {
             <LogoutWidget/>
           </div>
         </div>
-
-        <p>
-          <input onChange={this.onMsgChange}/><button onClick={this.onMsgClick}>Send</button>
-        </p>
 
         {this.props.children}
       </div>

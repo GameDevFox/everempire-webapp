@@ -11,19 +11,14 @@ body {
   display: flex;
   flex-direction: row;
 
+  .site-name { font-weight: bold }
+  .logout-widget { margin-left: 10px; }
+
   .menu {
     flex-grow: 1;
 
-    & > * {
-      margin-left: 10px;
-    }
-  }
-
-  .logout-widget {
-    margin-left: 10px;
+    & > * { margin-left: 10px; }
   }
 }
 
-#hidden-game {
-  display: none;
-}
+#hidden-game { display: none; }

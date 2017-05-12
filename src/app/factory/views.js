@@ -11,6 +11,7 @@ import GenesisService from '../services/genesis-service';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
+import HomeB from '../views/home';
 import GameB from '../views/game';
 import WorldsB from '../views/worlds';
 
@@ -29,13 +30,14 @@ configP.then(config => {
 
 // Root
 const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
-const Root = bind(RootB, {authP, game, genesisService, LogoutWidget});
+const Root = bind(RootB, {authP, game, LogoutWidget});
 
 // SignIn
 const SignIn = bind(SignInB, {authP, browserHistory});
 
 // Views
+const Home = bind(HomeB, {genesisService});
 const Game = bind(GameB, {game});
 const Worlds = bind(WorldsB, {empireService, TableList});
 
-export {Root, SignIn, Game, Worlds};
+export {Root, SignIn, Home, Game, Worlds};
