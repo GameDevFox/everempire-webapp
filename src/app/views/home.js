@@ -22,7 +22,7 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <h1>Welcome to EverEmpire</h1>
+        <h2>Welcome to EverEmpire</h2>
 
         <p>
           <input onChange={this.onMsgChange}/><button onClick={this.onMsgClick}>Send</button>

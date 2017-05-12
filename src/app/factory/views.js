@@ -16,6 +16,7 @@ import GameB from '../views/game';
 import WorldsB from '../views/worlds';
 
 import LogoutWidgetB from '../views/widgets/logout-widget';
+import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
 const empireService = new EmpireService(authP);
@@ -28,11 +29,12 @@ configP.then(config => {
   genesisService.cmd('set', {name: 'MyName'});
 });
 
-// Root
+// Widgets
 const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
-const Root = bind(RootB, {authP, game, LogoutWidget});
+const NavigationBar = bind(NavigationBarB, {authP, LogoutWidget});
 
-// SignIn
+// Top Level
+const Root = bind(RootB, {game, NavigationBar});
 const SignIn = bind(SignInB, {authP, browserHistory});
 
 // Views
