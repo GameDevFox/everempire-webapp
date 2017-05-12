@@ -28,10 +28,25 @@ export function createGame(parent) {
     },
 
     create: game => {
-      const {stage} = game;
+      const {input, scale, stage} = game;
 
       // Set background color
       stage.backgroundColor = '#808080';
+
+      // Fullscreen mode
+      scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+      const {ALT, ENTER} = Phaser.KeyCode;
+      const fullscreenKey = input.keyboard.addKey(ENTER);
+      fullscreenKey.onDown.add(() => {
+        if(!input.keyboard.isDown(ALT))
+          return;
+
+        if(scale.isFullScreen)
+          scale.stopFullScreen();
+        else
+          scale.startFullScreen(true);
+      });
 
       // Add star
       const star = game.add.sprite(stage.width / 2, stage.height / 2, 'star');
