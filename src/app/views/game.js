@@ -11,7 +11,7 @@ export default class Game extends Component {
 
   render() {
     return (
-      <div>
+      <div className="game">
         <div id="game"/>
       </div>
     );

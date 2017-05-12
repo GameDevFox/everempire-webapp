@@ -24,7 +24,7 @@ export function unload(parent) {
 }
 
 export function createGame(parent) {
-  return new Phaser.Game(200, 150, Phaser.AUTO, parent, {
+  return new Phaser.Game(800, 450, Phaser.AUTO, parent, {
     render: game => {
       game.debug.text(`Hello EverEmpire`, 10, 20);
     }

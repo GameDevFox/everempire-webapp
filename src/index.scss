@@ -21,4 +21,13 @@ body {
   }
 }
 
+.game {
+  display: flex;
+  flex-direction: column;
+
+  #game {
+    align-self: center;
+  }
+}
+
 #hidden-game { display: none; }
