@@ -4,6 +4,8 @@ import Phaser from 'phaser';
 
 import $ from '../factory/my-query';
 
+import debugPlugin from './plugins/debug-plugin';
+
 export function init(parent) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
   window.game = createGame(parentId);
@@ -34,14 +36,18 @@ function getVector(wasd) {
 let star;
 let wasd;
 
+const GAME_WIDTH = 800;
+const GAME_HEIGHT = 450;
+
 export function createGame(parent) {
-  return new Phaser.Game(800, 450, Phaser.AUTO, parent, {
+  return new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, parent, {
     preload: game => {
       game.load.image('star', 'assets/star.png');
     },
 
     create: game => {
-      const {input, scale, stage} = game;
+      const {debug, input, plugins, scale, stage, time} = game;
+      const {ALT, ENTER, TILDE} = Phaser.KeyCode;
 
       // Set background color
       stage.backgroundColor = '#808080';
@@ -49,7 +55,6 @@ export function createGame(parent) {
       // Fullscreen mode
       scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-      const {ALT, ENTER} = Phaser.KeyCode;
       const fullscreenKey = input.keyboard.addKey(ENTER);
       fullscreenKey.onDown.add(() => {
         if(!input.keyboard.isDown(ALT))
@@ -62,20 +67,27 @@ export function createGame(parent) {
       });
 
       // Add star
-      star = game.add.sprite(stage.width / 2, stage.height / 2, 'star');
+      star = game.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'star');
       star.anchor.set(0.5);
 
       // WASD Controller
       wasd = input.keyboard.createCursorKeys();
+
+      // Debug
+      const dbPlugin = debugPlugin({debug, time});
+      dbPlugin.position.set(10, 40);
+      plugins.add(dbPlugin);
+      const debugKey = input.keyboard.addKey(TILDE);
+      debugKey.onDown.add(() => {
+        dbPlugin.visible = !dbPlugin.visible;
+      });
     },
 
-    update: game => {
-      const {stage} = game;
-
+    update: () => {
       const vector = getVector(wasd);
       vector.setMagnitude(200);
 
-      const pos = new Phaser.Point(stage.width / 2, stage.height / 2);
+      const pos = new Phaser.Point(GAME_WIDTH / 2, GAME_HEIGHT / 2);
       Phaser.Point.add(pos, vector, pos);
       star.position.copyFrom(pos);
     },
