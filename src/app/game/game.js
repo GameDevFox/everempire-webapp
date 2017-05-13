@@ -4,7 +4,8 @@ import Phaser from 'phaser';
 
 import $ from '../factory/my-query';
 
-import debugPlugin from './plugins/debug-plugin';
+import buildDebugPlugin from './plugins/debug-plugin';
+import buildStarPlugin from './plugins/star-plugin';
 
 export function init(parent) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
@@ -23,19 +24,6 @@ export function unload(parent) {
   gameCanvas.appendTo('#hidden-game');
 }
 
-function getVector(wasd) {
-  let yPos = wasd.up.isDown ? -1 : 0;
-  yPos += wasd.down.isDown ? 1 : 0;
-
-  let xPos = wasd.left.isDown ? -1 : 0;
-  xPos += wasd.right.isDown ? 1 : 0;
-
-  return new Phaser.Point(xPos, yPos);
-}
-
-let star;
-let wasd;
-
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 450;
 
@@ -46,8 +34,8 @@ export function createGame(parent) {
     },
 
     create: game => {
-      const {debug, input, plugins, scale, stage, time} = game;
-      const {ALT, ENTER, TILDE} = Phaser.KeyCode;
+      const {input, plugins, scale, stage} = game;
+      const {ALT, ENTER, SPACEBAR, TILDE} = Phaser.KeyCode;
 
       // Set background color
       stage.backgroundColor = '#808080';
@@ -66,30 +54,23 @@ export function createGame(parent) {
           scale.startFullScreen(true);
       });
 
-      // Add star
-      star = game.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'star');
-      star.anchor.set(0.5);
-
-      // WASD Controller
-      wasd = input.keyboard.createCursorKeys();
-
-      // Debug
-      const dbPlugin = debugPlugin({debug, time});
-      dbPlugin.position.set(10, 40);
-      plugins.add(dbPlugin);
+      // Debug plugin
+      const debugPlugin = buildDebugPlugin(game);
+      plugins.add(debugPlugin);
+      debugPlugin.position.set(10, 40);
+      debugPlugin.visible = false;
       const debugKey = input.keyboard.addKey(TILDE);
       debugKey.onDown.add(() => {
-        dbPlugin.visible = !dbPlugin.visible;
+        debugPlugin.visible = !debugPlugin.visible;
       });
-    },
 
-    update: () => {
-      const vector = getVector(wasd);
-      vector.setMagnitude(200);
-
-      const pos = new Phaser.Point(GAME_WIDTH / 2, GAME_HEIGHT / 2);
-      Phaser.Point.add(pos, vector, pos);
-      star.position.copyFrom(pos);
+      // Star plugin
+      const starPlugin = buildStarPlugin(game);
+      plugins.add(starPlugin);
+      const starKey = input.keyboard.addKey(SPACEBAR);
+      starKey.onDown.add(() => {
+        starPlugin.enabled = !starPlugin.enabled;
+      });
     },
 
     render: game => {
