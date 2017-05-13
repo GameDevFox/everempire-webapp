@@ -1,6 +1,8 @@
-import 'pixi';
-import 'p2';
-import Phaser from 'phaser';
+import 'file-loader?name=[name].[ext]&outputPath=libs/!pixi';
+import 'file-loader?name=[name].[ext]&outputPath=libs/!p2';
+import 'file-loader?name=[name].[ext]&outputPath=libs/!phaser';
+
+const Phaser = window.Phaser;
 
 import $ from '../factory/my-query';
 

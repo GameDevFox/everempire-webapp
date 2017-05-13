@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+const Phaser = window.Phaser;
 
 export default function build({debug, time}) {
   const debugPlugin = new Phaser.Plugin();

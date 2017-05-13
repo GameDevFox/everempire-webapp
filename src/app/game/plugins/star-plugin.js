@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+const Phaser = window.Phaser;
 
 import addBooleanProp from '../../utils/bool-prop';
 
