@@ -5,26 +5,26 @@ import addBooleanProp from '../../utils/bool-prop';
 export default function build(game) {
   const {input} = game;
 
-  const starPlugin = new Phaser.Plugin();
+  const plugin = new Phaser.Plugin();
 
   let star;
   let wasd;
 
-  addBooleanProp(starPlugin, 'enabled', true, enabled => {
+  addBooleanProp(plugin, 'enabled', true, enabled => {
     star.visible = enabled;
   });
 
-  starPlugin.init = () => {
+  plugin.init = () => {
     // Add star
     star = game.add.sprite(800 / 2, 450 / 2, 'star');
     star.anchor.set(0.5);
-    star.visible = starPlugin.enabled;
+    star.visible = plugin.enabled;
 
     // WASD Controller
     wasd = input.keyboard.createCursorKeys();
   };
 
-  starPlugin.update = () => {
+  plugin.update = () => {
     const vector = getVector(wasd);
     vector.setMagnitude(200);
 
@@ -33,7 +33,7 @@ export default function build(game) {
     star.position.copyFrom(pos);
   };
 
-  return starPlugin;
+  return plugin;
 }
 
 function getVector(wasd) {

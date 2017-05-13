@@ -6,8 +6,9 @@ const Phaser = window.Phaser;
 
 import $ from '../factory/my-query';
 
-import buildDebugPlugin from './plugins/debug-plugin';
-import buildStarPlugin from './plugins/star-plugin';
+import buildDebugPlugin from './plugins/debug';
+import buildFullscreenPlugin from './plugins/fullscreen';
+import buildStarPlugin from './plugins/star';
 
 export function init(parent) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
@@ -36,25 +37,15 @@ export function createGame(parent) {
     },
 
     create: game => {
-      const {input, plugins, scale, stage} = game;
-      const {ALT, ENTER, SPACEBAR, TILDE} = Phaser.KeyCode;
+      const {input, plugins, stage} = game;
+      const {SPACEBAR, TILDE} = Phaser.KeyCode;
 
-      // Set background color
+      // Set game properties
       stage.backgroundColor = '#808080';
 
-      // Fullscreen mode
-      scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-      const fullscreenKey = input.keyboard.addKey(ENTER);
-      fullscreenKey.onDown.add(() => {
-        if(!input.keyboard.isDown(ALT))
-          return;
-
-        if(scale.isFullScreen)
-          scale.stopFullScreen();
-        else
-          scale.startFullScreen(true);
-      });
+      // Fullscreen
+      const fullscreenPlugin = buildFullscreenPlugin(game);
+      plugins.add(fullscreenPlugin);
 
       // Debug plugin
       const debugPlugin = buildDebugPlugin(game);

@@ -1,19 +1,19 @@
 const Phaser = window.Phaser;
 
 export default function build({debug, time}) {
-  const debugPlugin = new Phaser.Plugin();
+  const plugin = new Phaser.Plugin();
 
   const pos = new Phaser.Point();
-  debugPlugin.position = pos;
+  plugin.position = pos;
 
-  debugPlugin.init = () => {
+  plugin.init = () => {
     time.advancedTiming = true;
   };
 
-  debugPlugin.render = () => {
+  plugin.render = () => {
     debug.text(`FPS: ${time.fps}`, pos.x, pos.y);
     debug.text(`Physics Elapsed: ${time.physicsElapsed}`, pos.x, pos.y + 20);
   };
 
-  return debugPlugin;
+  return plugin;
 }
