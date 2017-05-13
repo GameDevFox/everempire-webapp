@@ -37,11 +37,12 @@ export function createGame(parent) {
     },
 
     create: game => {
-      const {input, plugins, stage} = game;
+      const {input, plugins, stage, physics} = game;
       const {SPACEBAR, TILDE} = Phaser.KeyCode;
 
       // Set game properties
       stage.backgroundColor = '#808080';
+      physics.startSystem(Phaser.Physics.P2JS);
 
       // Fullscreen
       const fullscreenPlugin = buildFullscreenPlugin(game);
@@ -50,7 +51,7 @@ export function createGame(parent) {
       // Debug plugin
       const debugPlugin = buildDebugPlugin(game);
       plugins.add(debugPlugin);
-      debugPlugin.position.set(10, 40);
+      debugPlugin.position.set(10, 60);
       debugPlugin.visible = false;
       const debugKey = input.keyboard.addKey(TILDE);
       debugKey.onDown.add(() => {
