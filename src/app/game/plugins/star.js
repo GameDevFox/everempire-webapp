@@ -22,6 +22,7 @@ export default function build(game) {
 
     // Enable physics
     physics.p2.enable(star);
+    star.body.fixedRotation = true;
 
     // WASD Controller
     wasd = input.keyboard.createCursorKeys();
