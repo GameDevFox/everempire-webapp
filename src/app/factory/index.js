@@ -2,8 +2,13 @@ import React from 'react';
 import {browserHistory, IndexRoute, Router, Route} from 'react-router';
 
 import {authP} from './my-query';
+import configP from './config';
 
 import {Root, SignIn, Home, Game, Worlds} from './views';
+
+configP.then(config => {
+  console.log('Config:', config);
+});
 
 authP.then($ => {
   if($.auth.user.signedIn)

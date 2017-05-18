@@ -22,11 +22,9 @@ import TableList from '../views/widgets/table-list';
 const empireService = new EmpireService(authP);
 const genesisService = new GenesisService();
 
-configP.then(config => {
-  console.log('Config:', config);
-
+Promise.all([authP, configP]).then(([$, config]) => {
   genesisService.connect(config.genesisUrl);
-  genesisService.cmd('set', {name: 'MyName'});
+  genesisService.cmd('set', {name: $.auth.user.email});
 });
 
 // Widgets

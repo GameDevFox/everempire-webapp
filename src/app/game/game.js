@@ -42,6 +42,7 @@ export function createGame(parent) {
 
       // Set game properties
       stage.backgroundColor = '#808080';
+      stage.disableVisibilityChange = true;
       physics.startSystem(Phaser.Physics.P2JS);
 
       // Fullscreen
