@@ -1,7 +1,13 @@
 const EventEmitter = require('events');
 
+const Events = {
+  DATA: 'data',
+  UNKNOWN: 'unknown'
+};
+
 const Commands = {
-  AUTH: 'auth'
+  AUTH: 'auth',
+  PLAYER_UPDATE: 'player_update'
 };
 
 class Genesis extends EventEmitter {
@@ -19,7 +25,13 @@ class Genesis extends EventEmitter {
 
     ws.addEventListener('message', event => {
       const data = JSON.parse(event.data);
-      this.emit('data', data);
+      this.emit(Events.DATA, data);
+
+      const cmd = data.cmd;
+      if(cmd)
+        this.emit(cmd, data.args);
+      else
+        this.emit(Events.UNKNOWN, data);
     });
 
     return this.wsP;
@@ -46,3 +58,4 @@ class Genesis extends EventEmitter {
 }
 
 export default Genesis;
+export {Events, Commands};

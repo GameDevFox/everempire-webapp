@@ -7,7 +7,7 @@ import configP from './config';
 import * as game from '../game/game';
 
 import EmpireService from '../services/empire-service';
-import Genesis from '../services/genesis';
+import Genesis, {Events} from '../services/genesis';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -22,7 +22,7 @@ import TableList from '../views/widgets/table-list';
 const empireService = new EmpireService(authP);
 const genesis = new Genesis();
 
-genesis.on('data', data => {
+genesis.on(Events.UNKNOWN, data => {
   console.log('Genesis Data:', JSON.stringify(data, null, 2));
 });
 
@@ -36,7 +36,7 @@ const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
 const NavigationBar = bind(NavigationBarB, {authP, LogoutWidget});
 
 // Top Level
-const Root = bind(RootB, {game, NavigationBar});
+const Root = bind(RootB, {game, genesis, NavigationBar});
 const SignIn = bind(SignInB, {authP, browserHistory});
 
 // Views

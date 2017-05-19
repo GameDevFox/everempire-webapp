@@ -10,9 +10,9 @@ import buildDebugPlugin from './plugins/debug';
 import buildFullscreenPlugin from './plugins/fullscreen';
 import buildStarPlugin from './plugins/star';
 
-export function init(parent) {
+export function init(parent, genesis) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
-  window.game = createGame(parentId);
+  window.game = createGame(parentId, genesis);
 }
 
 export function load(parent) {
@@ -30,7 +30,7 @@ export function unload(parent) {
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 450;
 
-export function createGame(parent) {
+export function createGame(parent, genesis) {
   return new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, parent, {
     preload: game => {
       game.load.image('star', 'assets/star.png');
@@ -60,7 +60,7 @@ export function createGame(parent) {
       });
 
       // Star plugin
-      const starPlugin = buildStarPlugin(game);
+      const starPlugin = buildStarPlugin(game, genesis);
       plugins.add(starPlugin);
       const starKey = input.keyboard.addKey(SPACEBAR);
       starKey.onDown.add(() => {

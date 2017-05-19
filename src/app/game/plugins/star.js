@@ -1,10 +1,13 @@
+import _ from 'lodash';
+
+import addBooleanProp from '../../utils/bool-prop';
+import {Commands} from '../../services/genesis';
+import DirectionPad from '../tools/direction-pad';
+
 const Phaser = window.Phaser;
 const {Plugin, Point} = Phaser;
 
-import addBooleanProp from '../../utils/bool-prop';
-import DirectionPad from '../tools/direction-pad';
-
-export default function build(game) {
+export default function build(game, genesis) {
   const {debug, input, physics, time} = game;
 
   const plugin = new Plugin();
@@ -13,23 +16,58 @@ export default function build(game) {
   let dPad;
   let playerStar;
 
+  const players = {};
+  window.players = players;
+
+  const createStar = function({x, y}) {
+    const star = game.add.sprite(x, y, 'star');
+    star.anchor.set(0.5);
+    star.visible = plugin.enabled;
+
+    // Enable physics
+    physics.p2.enable(star);
+    star.body.fixedRotation = true;
+    star.body.kinematic = true;
+
+    return star;
+  };
+
+  genesis.on(Commands.PLAYER_UPDATE, update => {
+    const {axis, dPadPos, pos, uid} = update;
+    console.log('Player Update: ', uid);
+
+    const playerData = players[uid];
+    if(playerData === undefined) {
+      const data = {};
+
+      data.star = createStar(pos);
+      data.dPad = createDPad({axis, position: dPadPos});
+
+      players[uid] = data;
+    } else {
+      _.assign(playerData, update);
+
+      const {star, dPad} = playerData;
+      star.body.x = pos.x;
+      star.body.y = pos.y;
+
+      dPad.axis.copyFrom(axis);
+      dPad.position.copyFrom(dPadPos);
+    }
+  });
+
   addBooleanProp(plugin, 'enabled', true, enabled => {
     playerStar.visible = enabled;
   });
 
   plugin.init = () => {
     // Add playerStar
-    playerStar = game.add.sprite(800 / 2, 450 / 2, 'star');
-    playerStar.anchor.set(0.5);
-    playerStar.visible = plugin.enabled;
-
-    // Enable physics
-    physics.p2.enable(playerStar);
-    playerStar.body.fixedRotation = true;
+    playerStar = createStar({x: 800 / 2, y: 450 / 2});
+    window.star = playerStar;
 
     // WASD Controller
     wasd = input.keyboard.createCursorKeys();
-    dPad = new DirectionPad({limit: 200, speed: 800});
+    dPad = createDPad();
   };
 
   // Simple movement
@@ -49,14 +87,34 @@ export default function build(game) {
   // };
 
   // Fancy movement
+  const lastAxis = new Point();
   plugin.update = () => {
     const axis = getAxis(wasd);
+    const elapsed = time.physicsElapsed;
+
+    // Update lastAxis
+    if(!axis.equals(lastAxis)) {
+      lastAxis.copyFrom(axis);
+      genesis.cmd(Commands.PLAYER_UPDATE, {
+        pos: {x: playerStar.body.x, y: playerStar.body.y},
+        axis: {x: axis.x, y: axis.y},
+        dPadPos: {x: dPad.position.x, y: dPad.position.y}
+      });
+    }
+
     dPad.axis.copyFrom(axis);
+    dPad.update(elapsed);
 
-    dPad.update(time.physicsElapsed);
+    setVelocity(playerStar, dPad.position);
 
-    playerStar.body.velocity.x = dPad.position.x;
-    playerStar.body.velocity.y = dPad.position.y;
+    // Update other players
+    _.each(players, player => {
+      const {dPad, star} = player;
+
+      dPad.update(elapsed);
+
+      setVelocity(star, dPad.position);
+    });
   };
 
   plugin.render = () => {
@@ -65,6 +123,23 @@ export default function build(game) {
   };
 
   return plugin;
+}
+
+function setVelocity(star, {x, y}) {
+  star.body.velocity.x = x;
+  star.body.velocity.y = y;
+}
+
+function createDPad(props = {}) {
+  const {axis, position} = props;
+  const dPad = new DirectionPad({limit: 200, speed: 800});
+
+  if(axis)
+    dPad.axis.copyFrom(axis);
+  if(position)
+    dPad.position.copyFrom(position);
+
+  return dPad;
 }
 
 function getAxis(wasd) {

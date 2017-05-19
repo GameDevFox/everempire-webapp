@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 export default class Root extends Component {
   componentDidMount() {
-    this.game.init('game');
+    this.game.init('game', this.genesis);
   }
 
   render() {
