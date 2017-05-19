@@ -7,7 +7,7 @@ import configP from './config';
 import * as game from '../game/game';
 
 import EmpireService from '../services/empire-service';
-import GenesisService from '../services/genesis-service';
+import Genesis from '../services/genesis';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -20,11 +20,15 @@ import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
 const empireService = new EmpireService(authP);
-const genesisService = new GenesisService();
+const genesis = new Genesis();
+
+genesis.on('data', data => {
+  console.log('Genesis Data:', JSON.stringify(data, null, 2));
+});
 
 Promise.all([authP, configP]).then(([$, config]) => {
-  genesisService.connect(config.genesisUrl);
-  genesisService.cmd('set', {name: $.auth.user.email});
+  genesis.connect(config.genesisUrl);
+  genesis.cmd('set', {name: $.auth.user.email});
 });
 
 // Widgets
@@ -36,7 +40,7 @@ const Root = bind(RootB, {game, NavigationBar});
 const SignIn = bind(SignInB, {authP, browserHistory});
 
 // Views
-const Home = bind(HomeB, {genesisService});
+const Home = bind(HomeB, {genesis});
 const Game = bind(GameB, {game});
 const Worlds = bind(WorldsB, {empireService, TableList});
 

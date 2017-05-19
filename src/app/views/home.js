@@ -15,7 +15,7 @@ export default class Home extends Component {
     this.onMsgClick = () => {
       const message = this.state.message;
       console.log(message);
-      this.genesisService.cmd('set', {message});
+      this.genesis.cmd('set', {message});
     };
   }
 

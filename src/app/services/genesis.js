@@ -1,8 +1,10 @@
+const EventEmitter = require('events');
+
 const Commands = {
   AUTH: 'auth'
 };
 
-class GenesisService {
+class Genesis extends EventEmitter {
   connect(url) {
     console.log(`Connecting to ${url} ...`);
 
@@ -16,7 +18,8 @@ class GenesisService {
     });
 
     ws.addEventListener('message', event => {
-      console.log(`Data from server: ${event.data}`);
+      const data = JSON.parse(event.data);
+      this.emit('data', data);
     });
 
     return this.wsP;
@@ -42,4 +45,4 @@ class GenesisService {
   }
 }
 
-export default GenesisService;
+export default Genesis;
