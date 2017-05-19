@@ -1,91 +1,78 @@
 const Phaser = window.Phaser;
+const {Plugin, Point} = Phaser;
 
 import addBooleanProp from '../../utils/bool-prop';
+import DirectionPad from '../tools/direction-pad';
 
 export default function build(game) {
   const {debug, input, physics, time} = game;
 
-  const plugin = new Phaser.Plugin();
+  const plugin = new Plugin();
 
-  let star;
   let wasd;
+  let dPad;
+  let playerStar;
 
   addBooleanProp(plugin, 'enabled', true, enabled => {
-    star.visible = enabled;
+    playerStar.visible = enabled;
   });
 
   plugin.init = () => {
-    // Add star
-    star = game.add.sprite(800 / 2, 450 / 2, 'star');
-    star.anchor.set(0.5);
-    star.visible = plugin.enabled;
+    // Add playerStar
+    playerStar = game.add.sprite(800 / 2, 450 / 2, 'star');
+    playerStar.anchor.set(0.5);
+    playerStar.visible = plugin.enabled;
 
     // Enable physics
-    physics.p2.enable(star);
-    star.body.fixedRotation = true;
+    physics.p2.enable(playerStar);
+    playerStar.body.fixedRotation = true;
 
     // WASD Controller
     wasd = input.keyboard.createCursorKeys();
+    dPad = new DirectionPad({limit: 200, speed: 800});
   };
 
   // Simple movement
   // plugin.update = () => {
   //   const speed = 200;
   //
-  //   const vector = getVector(wasd);
+  //   const vector = getAxis(wasd);
   //   vector.setMagnitude(speed);
   //
-  //   // const pos = new Phaser.Point(800 / 2, 450 / 2);
-  //   // Phaser.Point.add(pos, vector, pos);
-  //   // star.body.x = pos.x;
-  //   // star.body.y = pos.y;
+  //   // const pos = new Point(800 / 2, 450 / 2);
+  //   // Point.add(pos, vector, pos);
+  //   // playerStar.body.x = pos.x;
+  //   // playerStar.body.y = pos.y;
   //
-  //   star.body.velocity.x = vector.x;
-  //   star.body.velocity.y = vector.y;
+  //   playerStar.body.velocity.x = vector.x;
+  //   playerStar.body.velocity.y = vector.y;
   // };
 
   // Fancy movement
-  const starVelocity = new Phaser.Point();
   plugin.update = () => {
-    const limit = 200;
-    const accelerate = time.physicsElapsed * 800;
+    const axis = getAxis(wasd);
+    dPad.axis.copyFrom(axis);
 
-    const vector = getVector(wasd);
-    vector.setMagnitude(limit);
+    dPad.update(time.physicsElapsed);
 
-    // Move velocity towards point
-    const diff = Phaser.Point.subtract(vector, starVelocity);
-    const clippedAcc = diff.getMagnitude() < accelerate ? diff.getMagnitude() : accelerate;
-    diff.setMagnitude(clippedAcc);
-    Phaser.Point.add(starVelocity, diff, starVelocity);
-
-    // Max limit
-    const mag = starVelocity.getMagnitude();
-    starVelocity.setMagnitude(Math.min(mag, limit));
-
-    // const pos = new Phaser.Point(800 / 2, 450 / 2);
-    // Phaser.Point.add(pos, starVelocity, pos);
-    // star.body.x = pos.x;
-    // star.body.y = pos.y;
-
-    star.body.velocity.x = starVelocity.x;
-    star.body.velocity.y = starVelocity.y;
+    playerStar.body.velocity.x = dPad.position.x;
+    playerStar.body.velocity.y = dPad.position.y;
   };
 
   plugin.render = () => {
-    const velocity = star.body.velocity;
+    const velocity = playerStar.body.velocity;
     debug.text(`Star Vel: [${velocity.x}, ${velocity.y}]`, 10, 40);
   };
 
   return plugin;
 }
 
-function getVector(wasd) {
+function getAxis(wasd) {
   let yPos = wasd.up.isDown ? -1 : 0;
   yPos += wasd.down.isDown ? 1 : 0;
 
   let xPos = wasd.left.isDown ? -1 : 0;
   xPos += wasd.right.isDown ? 1 : 0;
 
-  return new Phaser.Point(xPos, yPos);
+  return new Point(xPos, yPos);
 }
