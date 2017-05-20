@@ -30,6 +30,15 @@ module.exports = {
           'babel-loader'
         ]
       },
+      // Phaser
+      {
+        test: /pixi/,
+        loader: "script-loader"
+      },
+      {
+        test: /p2/,
+        loader: "script-loader"
+      },
     ]
   },
   resolve: {

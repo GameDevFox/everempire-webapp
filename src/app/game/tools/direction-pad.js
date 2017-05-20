@@ -1,4 +1,7 @@
-const Phaser = window.Phaser;
+import 'pixi';
+import 'p2';
+import Phaser from 'phaser';
+
 const {Point} = Phaser;
 
 class DirectionPad {

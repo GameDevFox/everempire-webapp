@@ -1,9 +1,11 @@
-import _ from 'lodash';
+import 'pixi';
+import 'p2';
+import Phaser from 'phaser';
 
+import _ from 'lodash';
 import {Commands} from '../../services/genesis';
 import DirectionPad from '../tools/direction-pad';
 
-const Phaser = window.Phaser;
 const {Plugin, Point} = Phaser;
 
 export default function build(game, genesis) {

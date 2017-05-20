@@ -1,4 +1,6 @@
-const Phaser = window.Phaser;
+import 'pixi';
+import 'p2';
+import Phaser from 'phaser';
 
 export default function build({debug, time}) {
   const plugin = new Phaser.Plugin();

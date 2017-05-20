@@ -1,14 +1,12 @@
-import 'file-loader?name=[name].[ext]&outputPath=libs/!pixi';
-import 'file-loader?name=[name].[ext]&outputPath=libs/!p2';
-import 'file-loader?name=[name].[ext]&outputPath=libs/!phaser';
+import 'pixi';
+import 'p2';
+import Phaser from 'phaser';
 
 import $ from '../factory/my-query';
 
 import buildDebugPlugin from './plugins/debug';
 import buildFullscreenPlugin from './plugins/fullscreen';
 import buildStarPlugin from './plugins/star';
-
-const Phaser = window.Phaser;
 
 export function init(parent, genesis) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
