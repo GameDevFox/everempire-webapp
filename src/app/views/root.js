@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export default class Root extends Component {
   componentDidMount() {
@@ -21,7 +22,7 @@ export default class Root extends Component {
 
   static get propTypes() {
     return {
-      children: React.PropTypes.node
+      children: PropTypes.node
     };
   }
 }

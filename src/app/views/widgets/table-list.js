@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import _ from 'lodash';
 import {titleCase} from 'change-case';
@@ -54,8 +55,8 @@ export default class TableList extends Component {
 
   static get propTypes() {
     return {
-      cols: React.PropTypes.array.isRequired,
-      rows: React.PropTypes.array.isRequired
+      cols: PropTypes.array.isRequired,
+      rows: PropTypes.array.isRequired
     };
   }
 }
