@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import addBooleanProp from '../../utils/bool-prop';
 import {Commands} from '../../services/genesis';
 import DirectionPad from '../tools/direction-pad';
 
@@ -22,7 +21,6 @@ export default function build(game, genesis) {
   const createStar = function({x, y}) {
     const star = game.add.sprite(x, y, 'star');
     star.anchor.set(0.5);
-    star.visible = plugin.enabled;
 
     // Enable physics
     physics.p2.enable(star);
@@ -56,10 +54,6 @@ export default function build(game, genesis) {
     }
   });
 
-  addBooleanProp(plugin, 'enabled', true, enabled => {
-    playerStar.visible = enabled;
-  });
-
   plugin.init = () => {
     // Add playerStar
     playerStar = createStar({x: 800 / 2, y: 450 / 2});
@@ -69,22 +63,6 @@ export default function build(game, genesis) {
     wasd = input.keyboard.createCursorKeys();
     dPad = createDPad();
   };
-
-  // Simple movement
-  // plugin.update = () => {
-  //   const speed = 200;
-  //
-  //   const vector = getAxis(wasd);
-  //   vector.setMagnitude(speed);
-  //
-  //   // const pos = new Point(800 / 2, 450 / 2);
-  //   // Point.add(pos, vector, pos);
-  //   // playerStar.body.x = pos.x;
-  //   // playerStar.body.y = pos.y;
-  //
-  //   playerStar.body.velocity.x = vector.x;
-  //   playerStar.body.velocity.y = vector.y;
-  // };
 
   // Fancy movement
   const lastAxis = new Point();

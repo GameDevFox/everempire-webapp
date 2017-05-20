@@ -2,13 +2,13 @@ import 'file-loader?name=[name].[ext]&outputPath=libs/!pixi';
 import 'file-loader?name=[name].[ext]&outputPath=libs/!p2';
 import 'file-loader?name=[name].[ext]&outputPath=libs/!phaser';
 
-const Phaser = window.Phaser;
-
 import $ from '../factory/my-query';
 
 import buildDebugPlugin from './plugins/debug';
 import buildFullscreenPlugin from './plugins/fullscreen';
 import buildStarPlugin from './plugins/star';
+
+const Phaser = window.Phaser;
 
 export function init(parent, genesis) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
@@ -38,7 +38,7 @@ export function createGame(parent, genesis) {
 
     create: game => {
       const {input, plugins, stage, physics} = game;
-      const {SPACEBAR, TILDE} = Phaser.KeyCode;
+      const {TILDE} = Phaser.KeyCode;
 
       // Set game properties
       stage.backgroundColor = '#808080';
@@ -62,10 +62,6 @@ export function createGame(parent, genesis) {
       // Star plugin
       const starPlugin = buildStarPlugin(game, genesis);
       plugins.add(starPlugin);
-      const starKey = input.keyboard.addKey(SPACEBAR);
-      starKey.onDown.add(() => {
-        starPlugin.enabled = !starPlugin.enabled;
-      });
     },
 
     render: game => {
