@@ -4,7 +4,11 @@ import Phaser from 'phaser';
 
 const {Point} = Phaser;
 
-import {getFinalSpeedTime, getInterVector, getPos, getSlopeArea, getInvSlopeArea, matchSign} from './math';
+import {
+  getFinalSpeedTime, getInterVector, getInvSlopeArea,
+  getPos, getSlopeArea, getVelocity,
+  matchSign
+} from './math';
 
 describe('math', () => {
   describe('getFinalSpeedTime(axis, velocity, accel)', () => {
@@ -116,6 +120,40 @@ describe('math', () => {
 
       area = getInvSlopeArea(4, 1);
       area.should.eql(8);
+    });
+  });
+
+  describe('getVelocity(time, travelVector)', () => {
+    it('should work', () => {
+      const travelVector = {
+        time: 10,
+        pos: new Point(100, 100),
+        velocity: new Point(100, 0),
+        axis: new Point(0, -100).setMagnitude(100),
+        accel: 100
+      };
+
+      let velocity;
+      velocity = getVelocity(10, travelVector);
+      velocity.should.have.properties({x: 100, y: 0});
+
+      velocity = getVelocity(10.5, travelVector);
+      velocity.x.should.be.approximately(64.6, 0.1);
+      velocity.y.should.be.approximately(-35.3, 0.1);
+
+      velocity = getVelocity(10.70710678118655, travelVector);
+      velocity.x.should.be.approximately(50, 0.1);
+      velocity.y.should.be.approximately(-50, 0.1);
+
+      velocity = getVelocity(11, travelVector);
+      velocity.x.should.be.approximately(29.2, 0.1);
+      velocity.y.should.be.approximately(-70.7, 0.1);
+
+      velocity = getVelocity(11.414213562373095, travelVector);
+      velocity.should.have.properties({x: 0, y: -100});
+
+      velocity = getVelocity(11.5, travelVector);
+      velocity.should.have.properties({x: 0, y: -100});
     });
   });
 

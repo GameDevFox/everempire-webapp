@@ -14,9 +14,30 @@ export function buildTravelVector() {
   };
 }
 
+export function getFinalSpeedTime(velocity, axis, accel) {
+  const length = Point.subtract(axis, velocity).getMagnitude();
+  const time = length / accel;
+  return time;
+}
+
+export function getInvSlopeArea(x, theta) {
+  const area = (x * x) * theta;
+  return area - getSlopeArea(x, theta);
+}
+
+export function getInterVector(velocity, axis, theta) {
+  const rateA = getInvSlopeArea(1, theta);
+  const rateB = getSlopeArea(1, theta);
+
+  const vectorA = Point.multiply(velocity, new Point(rateA, rateA));
+  const vectorB = Point.multiply(axis, new Point(rateB, rateB));
+
+  const vectorAB = Point.add(vectorA, vectorB);
+  return vectorAB;
+}
+
 export function getPos(time, travelVector) {
   const {time: tTime, axis, velocity, pos, accel} = travelVector;
-
   const delta = time - tTime;
 
   // Get theta
@@ -43,26 +64,23 @@ export function getSlopeArea(x, theta) {
   return (area * area) / 2;
 }
 
-export function getInvSlopeArea(x, theta) {
-  const area = (x * x) * theta;
-  return area - getSlopeArea(x, theta);
-}
+export function getVelocity(time, travelVector) {
+  const {time: tTime, axis, velocity, accel} = travelVector;
+  const delta = time - tTime;
 
-export function getInterVector(velocity, axis, theta) {
-  const rateA = getInvSlopeArea(1, theta);
-  const rateB = getSlopeArea(1, theta);
+  // Get theta
+  const fsTime = getFinalSpeedTime(velocity, axis, accel);
+  if(delta > fsTime)
+    return axis;
 
-  const vectorA = Point.multiply(velocity, new Point(rateA, rateA));
-  const vectorB = Point.multiply(axis, new Point(rateB, rateB));
+  const theta = delta / fsTime;
+  const invTheta = 1 - theta;
 
-  const vectorAB = Point.add(vectorA, vectorB);
-  return vectorAB;
-}
+  const vecA = Point.multiply(velocity, new Point(invTheta, invTheta));
+  const vecB = Point.multiply(axis, new Point(theta, theta));
 
-export function getFinalSpeedTime(velocity, axis, accel) {
-  const length = Point.subtract(axis, velocity).getMagnitude();
-  const time = length / accel;
-  return time;
+  const vector = Point.add(vecA, vecB);
+  return vector;
 }
 
 export function matchSign(before, after) {
