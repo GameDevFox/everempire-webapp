@@ -24,19 +24,19 @@ describe('math', () => {
       const endVel = new Point(0, -100);
 
       let vector;
-      vector = getInterVector(startVel, endVel, 0);
+      vector = getInterVector(startVel, endVel, 1, 0);
       vector.should.have.properties({x: 0, y: 0});
 
-      vector = getInterVector(startVel, endVel, 0.25);
+      vector = getInterVector(startVel, endVel, 1, 0.25);
       vector.should.have.properties({x: 21.875, y: -3.125});
 
-      vector = getInterVector(startVel, endVel, 0.5);
+      vector = getInterVector(startVel, endVel, 1, 0.5);
       vector.should.have.properties({x: 37.50, y: -12.50});
 
-      vector = getInterVector(startVel, endVel, 0.75);
+      vector = getInterVector(startVel, endVel, 1, 0.75);
       vector.should.have.properties({x: 46.875, y: -28.125});
 
-      vector = getInterVector(startVel, endVel, 1);
+      vector = getInterVector(startVel, endVel, 1, 1);
       vector.should.have.properties({x: 50.00, y: -50.00});
     });
   });
@@ -56,28 +56,28 @@ describe('math', () => {
       pos.should.have.properties({x: 100, y: 100});
 
       pos = getPos(10.5, travelVector);
-      pos.x.should.be.approximately(129.1, 0.1);
-      pos.y.should.be.approximately(93.7, 0.1);
+      pos.x.should.be.approximately(141.1, 0.1);
+      pos.y.should.be.approximately(91.1, 0.1);
 
       pos = getPos(10.70710678118655, travelVector);
-      pos.x.should.be.approximately(137.5, 0.1);
-      pos.y.should.be.approximately(87.5, 0.1);
+      pos.x.should.be.approximately(153, 0.1);
+      pos.y.should.be.approximately(82.3, 0.1);
 
       pos = getPos(11, travelVector);
-      pos.x.should.be.approximately(145.7, 0.1);
-      pos.y.should.be.approximately(75, 0.1);
+      pos.x.should.be.approximately(164.6, 0.1);
+      pos.y.should.be.approximately(64.6, 0.1);
 
       pos = getPos(11.414213562373095, travelVector);
-      pos.x.should.be.approximately(150, 0.1);
-      pos.y.should.be.approximately(50, 0.1);
+      pos.x.should.be.approximately(170.7, 0.1);
+      pos.y.should.be.approximately(29.2, 0.1);
 
       pos = getPos(11.5, travelVector);
-      pos.x.should.be.approximately(150, 0.1);
-      pos.y.should.be.approximately(41.4, 0.1);
+      pos.x.should.be.approximately(170.7, 0.1);
+      pos.y.should.be.approximately(20.7, 0.1);
 
       pos = getPos(12, travelVector);
-      pos.x.should.be.approximately(150, 0.1);
-      pos.y.should.be.approximately(-8.5, 0.1);
+      pos.x.should.be.approximately(170.7, 0.1);
+      pos.y.should.be.approximately(-29.2, 0.1);
     });
   });
 

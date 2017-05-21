@@ -25,15 +25,21 @@ export function getInvSlopeArea(x, theta) {
   return area - getSlopeArea(x, theta);
 }
 
-export function getInterVector(velocity, axis, theta) {
-  const rateA = getInvSlopeArea(1, theta);
-  const rateB = getSlopeArea(1, theta);
+export function getInterVector(start, end, frames, theta) {
+  const framesP = new Point(frames, frames);
 
-  const vectorA = Point.multiply(velocity, new Point(rateA, rateA));
-  const vectorB = Point.multiply(axis, new Point(rateB, rateB));
+  const diff = Point.subtract(end, start);
+  const accel = Point.divide(diff, framesP);
 
-  const vectorAB = Point.add(vectorA, vectorB);
-  return vectorAB;
+  accel.x = isNaN(accel.x) ? 0 : accel.x;
+  accel.y = isNaN(accel.y) ? 0 : accel.y;
+
+  const units = Point.multiply(framesP, new Point(theta, theta));
+  const baseArea = Point.multiply(units, start);
+  const slopeArea = Point.divide(Point.multiply(Point.multiply(units, units), accel), new Point(2, 2));
+
+  const totalArea = Point.add(baseArea, slopeArea);
+  return totalArea;
 }
 
 export function getPos(time, travelVector) {
@@ -46,7 +52,7 @@ export function getPos(time, travelVector) {
   const theta = atFullSpeed ? 1 : delta / fsTime;
 
   // Get inter vector and apply to pos
-  const vectorAB = getInterVector(velocity, axis, theta);
+  const vectorAB = getInterVector(velocity, axis, fsTime, theta);
   const finalPos = Point.add(pos, vectorAB);
 
   // Extend past the final point

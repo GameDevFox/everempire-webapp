@@ -4,18 +4,19 @@ import Phaser from 'phaser';
 
 import _ from 'lodash';
 import {Commands} from '../../services/genesis';
-import DirectionPad from '../tools/direction-pad';
+import {getPos, getVelocity} from './math';
 
 const {Plugin, Point} = Phaser;
 
 export default function build(game, genesis) {
-  const {debug, input, physics, time} = game;
+  const {debug, input, time} = game;
 
   const plugin = new Plugin();
 
   let wasd;
-  let dPad;
+
   let playerStar;
+  let travelVector;
 
   const players = {};
   window.players = players;
@@ -24,16 +25,13 @@ export default function build(game, genesis) {
     const star = game.add.sprite(x, y, 'star');
     star.anchor.set(0.5);
 
-    // Enable physics
-    physics.p2.enable(star);
-    star.body.fixedRotation = true;
-    star.body.kinematic = true;
-
     return star;
   };
 
   genesis.on(Commands.PLAYER_UPDATE, update => {
-    const {axis, dPadPos, pos, uid} = update;
+    console.log('Update:', update);
+
+    const {pos, uid} = update;
     console.log('Player Update: ', uid);
 
     const playerData = players[uid];
@@ -41,85 +39,72 @@ export default function build(game, genesis) {
       const data = {};
 
       data.star = createStar(pos);
-      data.dPad = createDPad({axis, position: dPadPos});
+      _.assign(data, update);
 
       players[uid] = data;
     } else {
       _.assign(playerData, update);
 
-      const {star, dPad} = playerData;
-      star.body.x = pos.x;
-      star.body.y = pos.y;
-
-      dPad.axis.copyFrom(axis);
-      dPad.position.copyFrom(dPadPos);
+      const {star, pos} = playerData;
+      star.x = pos.x;
+      star.y = pos.y;
     }
   });
 
   plugin.init = () => {
+    // Coords
+    const pos = {x: 800 / 2, y: 450 / 2};
+
     // Add playerStar
-    playerStar = createStar({x: 800 / 2, y: 450 / 2});
+    playerStar = createStar(pos);
     window.star = playerStar;
 
     // WASD Controller
     wasd = input.keyboard.createCursorKeys();
-    dPad = createDPad();
+
+    const curTime = time.time / 1000;
+    travelVector = buildTravelVector(curTime, pos);
   };
 
   // Fancy movement
-  const lastAxis = new Point();
   plugin.update = () => {
-    const axis = getAxis(wasd);
-    const elapsed = time.physicsElapsed;
+    const curTime = time.time / 1000;
 
-    // Update lastAxis
-    if(!axis.equals(lastAxis)) {
-      lastAxis.copyFrom(axis);
-      genesis.cmd(Commands.PLAYER_UPDATE, {
-        pos: {x: playerStar.body.x, y: playerStar.body.y},
-        axis: {x: axis.x, y: axis.y},
-        dPadPos: {x: dPad.position.x, y: dPad.position.y}
-      });
+    const axis = getAxis(wasd);
+    axis.setMagnitude(200);
+
+    if(!axis.equals(travelVector.axis)) {
+      const oldVel = getVelocity(curTime, travelVector);
+
+      travelVector.time = curTime;
+      travelVector.pos.copyFrom(playerStar);
+      travelVector.velocity.copyFrom(oldVel);
+      travelVector.axis.copyFrom(axis);
+
+      genesis.cmd(Commands.PLAYER_UPDATE, travelVector);
     }
 
-    dPad.axis.copyFrom(axis);
-    dPad.update(elapsed);
-
-    setVelocity(playerStar, dPad.position);
+    updateStar(playerStar, curTime, travelVector);
 
     // Update other players
-    _.each(players, player => {
-      const {dPad, star} = player;
-
-      dPad.update(elapsed);
-
-      setVelocity(star, dPad.position);
-    });
+    _.each(players, playerData => updateStar(playerData.star, curTime, playerData));
   };
 
   plugin.render = () => {
-    const velocity = playerStar.body.velocity;
-    debug.text(`Star Vel: [${velocity.x}, ${velocity.y}]`, 10, 40);
+    debug.text(`Star: [${playerStar.x}, ${playerStar.y}]`, 10, 40);
   };
 
   return plugin;
 }
 
-function setVelocity(star, {x, y}) {
-  star.body.velocity.x = x;
-  star.body.velocity.y = y;
-}
-
-function createDPad(props = {}) {
-  const {axis, position} = props;
-  const dPad = new DirectionPad({limit: 200, speed: 800});
-
-  if(axis)
-    dPad.axis.copyFrom(axis);
-  if(position)
-    dPad.position.copyFrom(position);
-
-  return dPad;
+function buildTravelVector(time, {x, y}) {
+  return {
+    time,
+    pos: new Point(x, y),
+    velocity: new Point(),
+    axis: new Point(),
+    accel: 800
+  };
 }
 
 function getAxis(wasd) {
@@ -130,4 +115,10 @@ function getAxis(wasd) {
   xPos += wasd.right.isDown ? 1 : 0;
 
   return new Point(xPos, yPos);
+}
+
+function updateStar(star, time, travelVector) {
+  const pos = getPos(time, travelVector);
+  star.x = pos.x;
+  star.y = pos.y;
 }
