@@ -8,6 +8,9 @@ import VectorPath from '../util/vector-path';
 
 const {Plugin, Point} = Phaser;
 
+const TWEEN_TIME = 1;
+const easeOutCubic = t => ((--t) * t * t) + 1;
+
 export default function build(game, genesis) {
   const {debug, input, time} = game;
 
@@ -20,18 +23,27 @@ export default function build(game, genesis) {
   let vectorPath;
 
   genesis.on(Commands.PLAYER_UPDATE, update => {
-    const {uid} = update;
+    const {uid, vectorPath: newVectorPath} = update;
     console.log('Player Update: ', uid);
 
     const playerData = players[uid];
     if(playerData === undefined) {
       const data = {
         star: createStar(game),
-        vectorPath: new VectorPath(update.vectorPath)
+        vectorPath: new VectorPath(newVectorPath),
+        lagVectorPath: new VectorPath(newVectorPath)
       };
       players[uid] = data;
-    } else
-      playerData.vectorPath.copyFrom(update.vectorPath);
+    } else {
+      const {star, vectorPath, lagVectorPath} = playerData;
+      const curTime = time.time / 1000;
+
+      vectorPath.copyFrom(newVectorPath);
+
+      lagVectorPath.copyFrom(newVectorPath);
+      lagVectorPath.time = curTime;
+      lagVectorPath.pos.copyFrom(star);
+    }
   });
 
   plugin.init = () => {
@@ -53,9 +65,22 @@ export default function build(game, genesis) {
       genesis.cmd(Commands.PLAYER_UPDATE, vectorPath);
     }
 
-    // Update stars
-    updateStar(playerStar, curTime, vectorPath);
-    _.each(players, playerData => updateStar(playerData.star, curTime, playerData.vectorPath));
+    // Update player star
+    const pos = vectorPath.getPos(curTime);
+    pos.copyTo(playerStar);
+
+    // Update remote stars
+    _.each(players, playerData => {
+      const {star, vectorPath, lagVectorPath} = playerData;
+
+      const pos = vectorPath.getPos(curTime);
+      const lagPos = lagVectorPath.getPos(curTime);
+
+      let theta = Math.min(curTime - lagVectorPath.time, TWEEN_TIME) / TWEEN_TIME;
+      theta = easeOutCubic(theta);
+
+      Point.interpolate(lagPos, pos, theta).copyTo(star);
+    });
   };
 
   plugin.render = () => {
@@ -81,9 +106,4 @@ function getAxis(wasd) {
 
   const result = new Point(xPos, yPos);
   return result;
-}
-
-function updateStar(star, time, vectorPath) {
-  const pos = vectorPath.getPos(time);
-  pos.copyTo(star);
 }
