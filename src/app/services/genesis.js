@@ -7,24 +7,32 @@ const Events = {
 
 const Commands = {
   AUTH: 'auth',
-  PLAYER_UPDATE: 'player_update'
+  PLAYER_UPDATE: 'player_update',
+  PING: 'ping'
 };
 
 class Genesis extends EventEmitter {
   connect(url) {
-    console.log(`Connecting to ${url} ...`);
+    console.log(`Connecting to GENESIS at ${url} ...`);
 
     const ws = new WebSocket(url);
 
     this.wsP = new Promise(resolve => {
       ws.addEventListener('open', () => {
-        console.log('Connection open');
+        console.log('Connected to GENESIS');
         resolve(ws);
       });
     });
 
     ws.addEventListener('message', event => {
-      const data = JSON.parse(event.data);
+      const msg = event.data;
+
+      if(msg === 'PING') {
+        ws.send('PONG');
+        return;
+      }
+
+      const data = JSON.parse(msg);
       this.emit(Events.DATA, data);
 
       const cmd = data.cmd;
@@ -32,6 +40,12 @@ class Genesis extends EventEmitter {
         this.emit(cmd, data.args);
       else
         this.emit(Events.UNKNOWN, data);
+    });
+
+    this.ping = -1;
+    this.on(Commands.PING, args => {
+      this.ping = args;
+      this.cmd('pong');
     });
 
     return this.wsP;
@@ -42,7 +56,10 @@ class Genesis extends EventEmitter {
   }
 
   cmd(cmd, args) {
-    return this.send({cmd, args});
+    const msg = {cmd};
+    if(args)
+      msg.args = args;
+    return this.send(msg);
   }
 
   send(message) {

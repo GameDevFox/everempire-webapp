@@ -84,7 +84,8 @@ export default function build(game, genesis) {
   };
 
   plugin.render = () => {
-    debug.text(`Star: [${playerStar.x.toFixed(1)}, ${playerStar.y.toFixed(1)}]`, 10, 40);
+    debug.text(`Ping: ${genesis.ping}`, 10, 40);
+    debug.text(`Star: [${playerStar.x.toFixed(1)}, ${playerStar.y.toFixed(1)}]`, 10, 60);
   };
 
   return plugin;
