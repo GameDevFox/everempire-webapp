@@ -1,51 +1,42 @@
 import {authP} from './my-query';
 import configP from './config';
 
-import Genesis, {Commands, Events} from '../services/genesis';
+import Genesis, {Events} from '../services/genesis';
+import Commands from '../common/commands';
+import TimeSync from '../common/time-sync';
 
 const genesis = new Genesis();
+
+genesis.timeSync = new TimeSync();
 
 genesis.on(Events.UNKNOWN, data => {
   console.log('Genesis Data:', JSON.stringify(data, null, 2));
 });
 
-genesis.on(Events.CONNECT, () => {
-  let count = 0;
-  const interval = setInterval(() => {
-    const clientTime = Date.now();
-    genesis.cmd('sync', clientTime);
-
-    if(++count >= 10)
-      clearInterval(interval);
-  }, 100);
+let pingId;
+let localTime;
+genesis.on(Commands.PING, args => {
+  localTime = Date.now();
+  pingId = args[0];
+  genesis.cmd(Commands.PING, [pingId, Date.now()]);
 });
 
-const baseTime = Date.now();
+genesis.on(Commands.PONG, args => {
+  const laterLocalTime = Date.now();
+  const [receivedId, serverTime] = args;
 
-let minOffset = 0;
-let maxOffset = Number.POSITIVE_INFINITY;
-genesis.on(Commands.SYNC, args => {
-  const finalClientTime = Date.now();
-  const {clientTime, serverTime} = args;
+  if(pingId !== receivedId) {
+    console.warn(`Ping ids did not match, ignoring: ${pingId} ${receivedId}`);
+    return;
+  }
 
-  const thisMinOffset = serverTime - finalClientTime;
-  const thisMaxOffset = serverTime - clientTime;
-
-  minOffset = Math.max(minOffset, thisMinOffset);
-  maxOffset = Math.min(maxOffset, thisMaxOffset);
-  const minMaxDiff = maxOffset - minOffset;
-  const clientServerOffset = Math.floor(minOffset + (minMaxDiff / 2));
-
-  console.log(`-`);
-  console.log(`${clientTime - baseTime} < ${serverTime - baseTime} < ${finalClientTime - baseTime} (${finalClientTime - clientTime})`);
-  console.log(`${serverTime - finalClientTime} < ${serverTime - clientTime}`);
-  console.log(`${minOffset} < ${clientServerOffset} < ${maxOffset} (${maxOffset - minOffset})`);
+  genesis.ping = laterLocalTime - localTime;
+  genesis.offset = genesis.timeSync.update(localTime, serverTime, laterLocalTime);
 });
 
 Promise.all([authP, configP]).then(([$, config]) => {
   genesis.connect(config.genesisUrl);
-  // TODO: AUTH command should go here
-  genesis.cmd('set', {name: $.auth.user.email});
+  genesis.cmd(Commands.AUTH, {name: $.auth.user.email});
 });
 
 export default genesis;

@@ -1,4 +1,6 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events';
+
+import Commands from '../common/commands';
 
 const Events = {
   CONNECT: 'connect',
@@ -6,14 +8,7 @@ const Events = {
   UNKNOWN: 'unknown'
 };
 
-const Commands = {
-  AUTH: 'auth',
-  PLAYER_UPDATE: 'player_update',
-  PING: 'ping',
-  SYNC: 'sync'
-};
-
-class Genesis extends EventEmitter {
+export default class Genesis extends EventEmitter {
   connect(url) {
     console.log(`Connecting to GENESIS at ${url} ...`);
 
@@ -38,13 +33,6 @@ class Genesis extends EventEmitter {
         this.emit(cmd, data.args);
       else
         this.emit(Events.UNKNOWN, data);
-    });
-
-    // Ping Handler
-    this.ping = -1;
-    this.on(Commands.PING, args => {
-      this.ping = args;
-      this.cmd('pong');
     });
 
     return this.wsP;
@@ -73,5 +61,4 @@ class Genesis extends EventEmitter {
   }
 }
 
-export default Genesis;
-export {Events, Commands};
+export {Events};

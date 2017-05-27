@@ -3,7 +3,7 @@ import 'p2';
 import Phaser from 'phaser';
 
 import _ from 'lodash';
-import {Commands} from '../../services/genesis';
+import Commands from '../../common/commands';
 import VectorPath from '../util/vector-path';
 
 const {Plugin, Point} = Phaser;
@@ -23,17 +23,16 @@ export default function build(game, genesis) {
   let vectorPath;
 
   genesis.on(Commands.PLAYER_UPDATE, update => {
-    const {uid, vectorPath: newVectorPath} = update;
-    console.log('Player Update: ', uid);
+    const {sid, vectorPath: newVectorPath} = update;
 
-    const playerData = players[uid];
+    const playerData = players[sid];
     if(playerData === undefined) {
       const data = {
         star: createStar(game),
         vectorPath: new VectorPath(newVectorPath),
         lagVectorPath: new VectorPath(newVectorPath)
       };
-      players[uid] = data;
+      players[sid] = data;
     } else {
       const {star, vectorPath, lagVectorPath} = playerData;
       const curTime = time.time / 1000;
@@ -84,8 +83,7 @@ export default function build(game, genesis) {
   };
 
   plugin.render = () => {
-    debug.text(`Ping: ${genesis.ping}`, 10, 40);
-    debug.text(`Star: [${playerStar.x.toFixed(1)}, ${playerStar.y.toFixed(1)}]`, 10, 60);
+    debug.text(`Star: [${playerStar.x.toFixed(1)}, ${playerStar.y.toFixed(1)}]`, 10, 40);
   };
 
   return plugin;

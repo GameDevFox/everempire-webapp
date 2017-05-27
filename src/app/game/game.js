@@ -48,7 +48,7 @@ export function createGame(parent, genesis) {
       plugins.add(fullscreenPlugin);
 
       // Debug plugin
-      const debugPlugin = buildDebugPlugin(game);
+      const debugPlugin = buildDebugPlugin({debug: game.debug, time: game.time, genesis});
       plugins.add(debugPlugin);
       debugPlugin.position.set(10, 60);
       debugPlugin.visible = false;
