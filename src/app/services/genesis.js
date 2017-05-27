@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 
 const Events = {
+  CONNECT: 'connect',
   DATA: 'data',
   UNKNOWN: 'unknown'
 };
@@ -8,7 +9,8 @@ const Events = {
 const Commands = {
   AUTH: 'auth',
   PLAYER_UPDATE: 'player_update',
-  PING: 'ping'
+  PING: 'ping',
+  SYNC: 'sync'
 };
 
 class Genesis extends EventEmitter {
@@ -21,16 +23,12 @@ class Genesis extends EventEmitter {
       ws.addEventListener('open', () => {
         console.log('Connected to GENESIS');
         resolve(ws);
+        this.emit(Events.CONNECT);
       });
     });
 
     ws.addEventListener('message', event => {
       const msg = event.data;
-
-      if(msg === 'PING') {
-        ws.send('PONG');
-        return;
-      }
 
       const data = JSON.parse(msg);
       this.emit(Events.DATA, data);
@@ -42,6 +40,7 @@ class Genesis extends EventEmitter {
         this.emit(Events.UNKNOWN, data);
     });
 
+    // Ping Handler
     this.ping = -1;
     this.on(Commands.PING, args => {
       this.ping = args;

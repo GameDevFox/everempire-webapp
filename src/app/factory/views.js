@@ -2,12 +2,10 @@ import {browserHistory} from 'react-router';
 
 import {authP} from './my-query';
 import bind from '../utils/class-bind';
-import configP from './config';
 
 import * as game from '../game/game';
 
 import EmpireService from '../services/empire-service';
-import Genesis, {Events} from '../services/genesis';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -19,17 +17,9 @@ import LogoutWidgetB from '../views/widgets/logout-widget';
 import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
+import genesis from './genesis';
+
 const empireService = new EmpireService(authP);
-const genesis = new Genesis();
-
-genesis.on(Events.UNKNOWN, data => {
-  console.log('Genesis Data:', JSON.stringify(data, null, 2));
-});
-
-Promise.all([authP, configP]).then(([$, config]) => {
-  genesis.connect(config.genesisUrl);
-  genesis.cmd('set', {name: $.auth.user.email});
-});
 
 // Widgets
 const LogoutWidget = bind(LogoutWidgetB, {authP, browserHistory});
