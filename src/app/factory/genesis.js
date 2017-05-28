@@ -31,7 +31,7 @@ genesis.on(Commands.PONG, args => {
   }
 
   genesis.ping = laterLocalTime - localTime;
-  genesis.offset = genesis.timeSync.update(localTime, serverTime, laterLocalTime);
+  genesis.offset = genesis.timeSync.update(localTime, serverTime, laterLocalTime) / 1000;
 });
 
 Promise.all([authP, configP]).then(([$, config]) => {

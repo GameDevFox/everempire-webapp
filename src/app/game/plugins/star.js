@@ -25,6 +25,9 @@ export default function build(game, genesis) {
   genesis.on(Commands.PLAYER_UPDATE, update => {
     const {sid, vectorPath: newVectorPath} = update;
 
+    // Adjust time for offset
+    newVectorPath.time -= genesis.offset;
+
     const playerData = players[sid];
     if(playerData === undefined) {
       const data = {
@@ -61,7 +64,12 @@ export default function build(game, genesis) {
     axis.setMagnitude(200);
     if(!axis.equals(vectorPath.finalVel)) {
       vectorPath.updateFinalVel(curTime, axis);
-      genesis.cmd(Commands.PLAYER_UPDATE, vectorPath);
+
+      // Adjust time for offset
+      const finalVactorPath = new VectorPath(vectorPath);
+      finalVactorPath.time += genesis.offset;
+
+      genesis.cmd(Commands.PLAYER_UPDATE, finalVactorPath);
     }
 
     // Update player star

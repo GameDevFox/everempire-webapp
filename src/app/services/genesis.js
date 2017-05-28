@@ -9,6 +9,11 @@ const Events = {
 };
 
 export default class Genesis extends EventEmitter {
+  constructor() {
+    super();
+    this.offset = 0;
+  }
+
   connect(url) {
     console.log(`Connecting to GENESIS at ${url} ...`);
 
