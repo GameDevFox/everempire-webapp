@@ -20,7 +20,7 @@ export default class Worlds extends Component {
         .then(world => {
           const worlds = this.state.worlds;
           worlds.push(world);
-          this.setState({world});
+          this.setState({worlds});
         });
     };
 

@@ -55,8 +55,8 @@ export default class EmpireService {
       .then(clearToken, clearToken);
   }
 
-  createWorld(props) {
-    return this.post('/me/world', props);
+  createWorld(data) {
+    return this.post('/me/world', data);
   }
 
   destroyWorld(id) {
