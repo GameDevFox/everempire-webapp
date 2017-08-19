@@ -6,13 +6,13 @@ export default class Worlds extends Component {
 
     this.state = {
       name: '',
-      worlds: [],
-      user: null
+      worlds: []
     };
 
     this.onNameChange = e => {
       this.setState({name: e.target.value});
     };
+
     this.onCreateWorld = () => {
       this.setState({name: ''});
       const name = this.state.name;
@@ -23,6 +23,7 @@ export default class Worlds extends Component {
           this.setState({world});
         });
     };
+
     this.onDestroyClick = worldId => {
       return () => {
         this.empireService.destroyWorld(worldId)
@@ -33,20 +34,21 @@ export default class Worlds extends Component {
           });
       };
     };
-    this.belongsToUser = world => (this.state.user.id === world.user.id);
+
+    this.belongsToUser = world => (this.state.meId === world.user_id);
 
     this.worldColumns = [
       'id',
       'name',
-      ['User', 'user.email'],
+      ['User', 'user.name'],
       ['Action', world => {
         const destroyButton = this.belongsToUser(world) ?
-          (<button onClick={this.onDestroyClick(world.id)}>
+          (<button className="btn btn-default btn-xs" onClick={this.onDestroyClick(world.id)}>
             Destroy
           </button>) : null;
 
         return (<div>
-          <button>Connect</button>
+          <button className="btn btn-default btn-xs">Connect</button>
           {destroyButton}
         </div>);
       }]
@@ -54,13 +56,10 @@ export default class Worlds extends Component {
   }
 
   componentWillMount() {
-    let user;
-    this.empireService.getUser()
-      .then(usr => {
-        user = usr;
-        return this.empireService.getWorlds();
-      })
-      .then(worlds => this.setState({user, worlds}));
+    this.empireService.getMe()
+      .then(me => this.setState({meId: me.id}));
+    this.empireService.getWorlds()
+      .then(worlds => this.setState({worlds}));
   }
 
   render() {
@@ -70,10 +69,10 @@ export default class Worlds extends Component {
       <div className="worlds">
         <h2>World List</h2>
 
-        <TableList rows={this.state.worlds} cols={this.worldColumns}/>
-
         <input value={this.state.name} onChange={this.onNameChange}/>
-        <button onClick={this.onCreateWorld}>Create</button>
+        <button className="btn btn-default btn-xs" onClick={this.onCreateWorld}>Create</button>
+
+        <TableList rows={this.state.worlds} cols={this.worldColumns}/>
       </div>
     );
   }

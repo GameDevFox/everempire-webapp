@@ -3,12 +3,15 @@ import React, {Component} from 'react';
 export default class LogoutWidget extends Component {
   constructor() {
     super();
-    this.onLogout = this.onLogout.bind(this);
-  }
 
-  onLogout() {
-    this.authP.then($ => $.auth.signOut())
-      .then(() => this.browserHistory.push('/sign-in'));
+    const routeToSignIn = () => {
+      this.browserHistory.push('/sign-in');
+    };
+
+    this.onLogout = () => {
+      this.empireService.signOut()
+        .then(routeToSignIn, routeToSignIn);
+    };
   }
 
   render() {

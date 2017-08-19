@@ -6,23 +6,22 @@ export default class NavigationBar extends Component {
     super();
 
     this.state = {
-      site: 'EverEmpire',
-      user: {}
+      site: 'EverEmpire'
     };
   }
 
   componentWillMount() {
-    this.authP.then($ => {
-      const user = $.auth.user;
-      this.setState({user});
-    });
+    this.empireService.getMe()
+      .then(me => {
+        const userName = me.name || '...';
+        this.setState({userName});
+      });
   }
 
   render() {
     const {LogoutWidget} = this;
 
-    const user = this.state.user;
-    const email = user.signedIn ? user.email : '...';
+    const {userName} = this.state;
 
     return (
       <div className="navigation-bar">
@@ -35,7 +34,7 @@ export default class NavigationBar extends Component {
         </div>
 
         <div className="user">
-          <b>{email}</b>
+          <b>{userName}</b>
           <LogoutWidget/>
         </div>
       </div>

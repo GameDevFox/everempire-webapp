@@ -1,5 +1,5 @@
-import {authP} from './my-query';
 import configP from './config';
+import empireService from './empire-service';
 
 import Genesis, {Events} from '../services/genesis';
 import Commands from '../common/commands';
@@ -34,9 +34,9 @@ genesis.on(Commands.PONG, args => {
   genesis.offset = genesis.timeSync.update(localTime, serverTime, laterLocalTime) / 1000;
 });
 
-Promise.all([authP, configP]).then(([$, config]) => {
+configP.then(config => {
   genesis.connect(config.genesisUrl);
-  genesis.cmd(Commands.AUTH, {name: $.auth.user.email});
+  genesis.cmd(Commands.AUTH, {token: empireService.token});
 });
 
 export default genesis;

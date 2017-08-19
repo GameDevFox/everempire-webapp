@@ -1,54 +1,57 @@
 import React, {Component} from 'react';
 
+import OAuthSignInButton from './widgets/oauth-signin-button';
+import empireService from '../factory/empire-service';
+
+const AUTH = 'auth';
+const AUTH_FAILURE = 'auth_failure';
+
+const providerClassMap = {
+  google_oauth2: 'google' // eslint-disable-line camelcase
+};
+
 export default class SignIn extends Component {
   constructor() {
     super();
     this.state = {
       errors: [],
-      email: 'email@domain.com',
-      password: 'password'
+      providers: []
     };
 
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
-    this.onRegister = this.onRegister.bind(this);
-    this.onLogin = this.onLogin.bind(this);
-  }
+    this.onAuth = ({data: token}) => {
+      console.log(`Login succeeded! Token: ${token}`);
+      this.empireService.token = token;
 
-  onEmailChange(event) {
-    this.setState({email: event.target.value});
-  }
+      this.empireService.getMe().then(me => {
+        console.log('Me', me);
 
-  onPasswordChange(event) {
-    this.setState({password: event.target.value});
-  }
-
-  onRegister() {
-    this.authP.then($ => $.auth.emailSignUp({
-      email: this.state.email,
-      password: this.state.password,
-      password_confirmation: this.state.password // eslint-disable-line camelcase
-    }));
-  }
-
-  onLogin() {
-    this.authP.then($ => {
-      console.log('Login', this.state.email, this.state.password);
-      return $.auth.emailSignIn({
-        email: this.state.email,
-        password: this.state.password
+        this.setState({errors: []});
+        this.browserHistory.push('/');
+      }, e => {
+        console.log('Fail', e);
       });
-    }).then(response => {
-      console.log(`Login succeeded for ${response.data.email}`);
+    };
 
-      this.setState({errors: []});
-      this.browserHistory.push('/');
-    }, response => {
-      console.log('Oops...');
-      console.log(response);
+    this.onAuthFailure = e => {
+      console.log('Auth Failure:');
+      console.log(e.data);
 
-      this.setState({errors: response.data.errors || []});
+      // this.setState({errors: response.data.errors || []});
+    };
+  }
+
+  componentDidMount() {
+    window.addEventListener(AUTH, this.onAuth);
+    window.addEventListener(AUTH_FAILURE, this.onAuthFailure);
+
+    this.empireService.getProviders().then(providers => {
+      this.setState({providers});
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(AUTH, this.onAuth);
+    window.removeEventListener(AUTH_FAILURE, this.onAuthFailure);
   }
 
   render() {
@@ -58,25 +61,20 @@ export default class SignIn extends Component {
       errorListView = (<ul>{list}</ul>);
     }
 
+    const providerButtons = this.state.providers.map(provider => {
+      const providerClass = providerClassMap[provider] || provider;
+      return <OAuthSignInButton key={provider} provider={providerClass} onClick={empireService.auth(provider)}/>;
+    });
+
     return (
       <div>
         <h1>Sign In</h1>
-        Please Log In or Sign Up
 
         {errorListView}
 
-        <div className="email">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="text" value={this.state.email} onChange={this.onEmailChange}/>
+        <div className="oauth">
+          {providerButtons}
         </div>
-
-        <div className="password">
-          <label htmlFor="password">Password</label>
-          <input id="password" type="password" value={this.state.password} onChange={this.onPasswordChange}/>
-        </div>
-
-        <button onClick={this.onRegister}>Register</button>
-        <button onClick={this.onLogin}>Login</button>
       </div>
     );
   }

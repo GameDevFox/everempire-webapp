@@ -46,7 +46,7 @@ export default class TableList extends Component {
     const tableRows = this.buildRows(rows, cols);
 
     return (
-      <table>
+      <table className="table">
         <thead>{header}</thead>
         <tbody>{tableRows}</tbody>
       </table>

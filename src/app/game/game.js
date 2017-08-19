@@ -2,7 +2,7 @@ import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
 
-import $ from '../factory/my-query';
+import $ from 'jquery';
 
 import buildDebugPlugin from './plugins/debug';
 import buildFullscreenPlugin from './plugins/fullscreen';
@@ -14,8 +14,9 @@ export function init(parent, genesis) {
 }
 
 export function load(parent) {
-  if($('#hidden-game canvas').length) {
-    const gameCanvas = $('#hidden-game canvas').detach();
+  const canvas = $('#hidden-game canvas');
+  if(canvas.length) {
+    const gameCanvas = canvas.detach();
     gameCanvas.appendTo(`#${parent}`);
   }
 }
