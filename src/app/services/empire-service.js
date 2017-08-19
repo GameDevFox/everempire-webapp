@@ -13,6 +13,10 @@ export default class EmpireService {
     };
   }
 
+  loadToken() {
+    this.token = sessionStorage.getItem('token');
+  }
+
   get token() {
     return sessionStorage.getItem('token');
   }
