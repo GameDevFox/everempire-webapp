@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import moment from 'moment';
+
 import OAuthSignInButton from './widgets/oauth-signin-button';
 import empireService from '../factory/empire-service';
 
@@ -42,8 +44,10 @@ export default class SignIn extends Component {
       });
     };
 
-    this.onAuth = ({token}) => {
+    this.onAuth = ({token, expires_at: expiresAt}) => {
       console.log(`Login succeeded! Token: ${token}`);
+      console.log(`Expires at: ${moment(expiresAt).format('L LTS')}`);
+
       this.empireService.token = token;
 
       this.empireService.getMe().then(me => {
