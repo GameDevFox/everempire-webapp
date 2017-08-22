@@ -3,8 +3,7 @@ import React, {Component} from 'react';
 import OAuthSignInButton from './widgets/oauth-signin-button';
 import empireService from '../factory/empire-service';
 
-const AUTH = 'auth';
-const AUTH_FAILURE = 'auth_failure';
+const MESSAGE = 'message';
 
 const providerClassMap = {
   google_oauth2: 'google' // eslint-disable-line camelcase
@@ -18,7 +17,32 @@ export default class SignIn extends Component {
       providers: []
     };
 
-    this.onAuth = ({data: token}) => {
+    this.onMessage = e => {
+      const {origin, data} = e;
+      console.log('Origin: ', e.origin);
+      console.log('Data: ', e.data);
+
+      this.empireService.configP.then(config => {
+        const empireServiceOrigin = config.empireServiceUrl.match(/\w+:\/\/[^/]*/);
+
+        const ok = origin.startsWith(empireServiceOrigin);
+        if(!ok)
+          throw new Error(`Origin of Auth Message [${origin}] does not match empireServiceOrigin: ${empireServiceOrigin}`);
+
+        switch (data.type) {
+          case 'auth':
+            this.onAuth(data);
+            break;
+          case 'auth_failure':
+            this.onAuthFailure(data);
+            break;
+          default:
+            throw new Error(`Invalid type from auth: ${data.type}`);
+        }
+      });
+    };
+
+    this.onAuth = ({token}) => {
       console.log(`Login succeeded! Token: ${token}`);
       this.empireService.token = token;
 
@@ -32,17 +56,14 @@ export default class SignIn extends Component {
       });
     };
 
-    this.onAuthFailure = e => {
-      console.log('Auth Failure:');
-      console.log(e.data);
-
+    this.onAuthFailure = data => {
+      console.log('Auth Failure:', data);
       // this.setState({errors: response.data.errors || []});
     };
   }
 
   componentDidMount() {
-    window.addEventListener(AUTH, this.onAuth);
-    window.addEventListener(AUTH_FAILURE, this.onAuthFailure);
+    window.addEventListener(MESSAGE, this.onMessage);
 
     this.empireService.getProviders().then(providers => {
       this.setState({providers});
@@ -50,8 +71,7 @@ export default class SignIn extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener(AUTH, this.onAuth);
-    window.removeEventListener(AUTH_FAILURE, this.onAuthFailure);
+    window.removeEventListener(MESSAGE, this.onMessage);
   }
 
   render() {

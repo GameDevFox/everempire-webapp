@@ -1,7 +1,8 @@
 export default class EmpireService {
-  constructor($, configP) {
+  constructor($, configP, browserHistory) {
     this.$ = $;
     this.configP = configP;
+    this.browserHistory = browserHistory;
   }
 
   auth(provider) {
@@ -50,13 +51,25 @@ export default class EmpireService {
     return this.get('/me');
   }
 
-  signOut() {
-    const clearToken = () => {
-      this.token = undefined;
-    };
+  clearToken() {
+    this.token = undefined;
+  }
 
-    return this.del('/me/token')
-      .then(clearToken, clearToken);
+  routeToSignIn() {
+    this.browserHistory.push('/sign-in');
+  }
+
+  signOut(destroyToken = true) {
+    this.clearToken();
+    this.routeToSignIn();
+
+    return new Promise((resolve, reject) => {
+      if(destroyToken) {
+        this.del('/me/token').then(resolve, reject);
+      } else {
+        resolve();
+      }
+    });
   }
 
   createWorld(data) {
@@ -80,7 +93,14 @@ export default class EmpireService {
           method,
           data,
           success: resolve,
-          error: reject
+          error: res => {
+            // Sign-out if unauthorized (401)
+            if(res.status === 401) {
+              this.signOut(false);
+            }
+
+            reject(res);
+          }
         });
       });
     });
