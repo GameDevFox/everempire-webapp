@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-import moment from 'moment';
-
 import OAuthSignInButton from './widgets/oauth-signin-button';
 import empireService from '../factory/empire-service';
 
@@ -21,9 +19,6 @@ export default class SignIn extends Component {
 
     this.onMessage = e => {
       const {origin, data} = e;
-      console.log('Origin: ', e.origin);
-      console.log('Data: ', e.data);
-
       this.empireService.configP.then(config => {
         const empireServiceOrigin = config.empireServiceUrl.match(/\w+:\/\/[^/]*/);
 
@@ -44,11 +39,9 @@ export default class SignIn extends Component {
       });
     };
 
-    this.onAuth = ({token, expires_at: expiresAt}) => {
-      console.log(`Login succeeded! Token: ${token}`);
-      console.log(`Expires at: ${moment(expiresAt).format('L LTS')}`);
-
-      this.empireService.token = token;
+    this.onAuth = token => {
+      console.log(`Login succeeded!`);
+      this.empireService.onToken(token);
 
       this.empireService.getMe().then(me => {
         console.log('Me', me);

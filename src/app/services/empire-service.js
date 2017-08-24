@@ -1,3 +1,7 @@
+import moment from 'moment';
+
+const renewTokenMsBefore = 60000;
+
 export default class EmpireService {
   constructor($, configP, browserHistory) {
     this.$ = $;
@@ -15,24 +19,42 @@ export default class EmpireService {
   }
 
   loadToken() {
-    this.token = sessionStorage.getItem('token');
+    const token = this.token;
+    if(token)
+      this.onToken(token);
+  }
+
+  renewToken() {
+    return this.get('/me/token').then(token => {
+      this.onToken(token);
+    });
+  }
+
+  onToken(token) {
+    const expiresMs = moment(token.expires_at).diff(moment());
+    const renewTimeout = expiresMs - renewTokenMsBefore;
+
+    setTimeout(() => {
+      this.renewToken();
+    }, renewTimeout);
+
+    this.token = token;
   }
 
   get token() {
-    return sessionStorage.getItem('token');
+    return JSON.parse(sessionStorage.getItem('token'));
   }
 
-  set token(token) {
-    if(token)
-      sessionStorage.setItem('token', token);
-    else
-      sessionStorage.removeItem('token');
-
+  set token(tokenData) {
     let beforeSend;
-    if(token) {
+
+    if(tokenData) {
+      sessionStorage.setItem('token', JSON.stringify(tokenData));
       beforeSend = xhr => {
-        xhr.setRequestHeader('Token', token);
+        xhr.setRequestHeader('Token', tokenData.token);
       };
+    } else {
+      sessionStorage.removeItem('token');
     }
 
     this.$.ajaxSetup({beforeSend});
