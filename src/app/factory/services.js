@@ -6,11 +6,18 @@ import TokenService from '../services/token-service';
 import $ from 'jquery';
 import configP from './config';
 
-const empireService = new EmpireService($, configP);
-const tokenService = new TokenService($, empireService, browserHistory);
-
-empireService.addListener('unauthorized', () => {
-  tokenService.signOut(false);
+const empireServiceP = configP.then(config => {
+  return new EmpireService($, config.empireServiceUrl);
 });
 
-export {empireService, tokenService};
+const tokenServiceP = empireServiceP.then(empireService => {
+  return new TokenService($, empireService, browserHistory);
+});
+
+Promise.all([empireServiceP, tokenServiceP]).then(([empireService, tokenService]) => {
+  empireService.addListener('unauthorized', () => {
+    tokenService.signOut(false);
+  });
+});
+
+export {empireServiceP, tokenServiceP};

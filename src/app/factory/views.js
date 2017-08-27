@@ -4,8 +4,10 @@ import bind from '../utils/class-bind';
 
 import * as game from '../game/game';
 
-import {empireService, tokenService} from './services';
-import genesis from './genesis';
+import configP from './config';
+
+import {empireServiceP, tokenServiceP} from './services';
+import genesisP from './genesis';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -17,15 +19,25 @@ import LogoutWidgetB from '../views/widgets/logout-widget';
 import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
-// Widgets
-const LogoutWidget = bind(LogoutWidgetB, {browserHistory, tokenService});
-const NavigationBar = bind(NavigationBarB, {empireService, LogoutWidget});
+const viewP = Promise.all([configP, empireServiceP, tokenServiceP, genesisP])
+  .then(([config, empireService, tokenService, genesis]) => {
+    const {empireServiceUrl} = config;
 
-// Top Level
-export const Root = bind(RootB, {game, genesis, NavigationBar});
-export const SignIn = bind(SignInB, {browserHistory, empireService, tokenService});
+    // Widgets
+    const LogoutWidget = bind(LogoutWidgetB, {browserHistory, tokenService});
+    const NavigationBar = bind(NavigationBarB, {empireService, LogoutWidget});
 
-// Views
-export const Home = bind(HomeB, {genesis});
-export const Game = bind(GameB, {game});
-export const Worlds = bind(WorldsB, {empireService, TableList});
+    // Top Level
+    const Root = bind(RootB, {game, genesis, NavigationBar});
+    const SignIn = bind(SignInB, {browserHistory, empireService, tokenService, empireServiceUrl});
+
+    // Views
+    const Home = bind(HomeB, {genesis});
+    const Game = bind(GameB, {game});
+    const Worlds = bind(WorldsB, {empireService, TableList});
+
+    return [Root, SignIn, Home, Game, Worlds];
+  }
+);
+
+export default viewP;

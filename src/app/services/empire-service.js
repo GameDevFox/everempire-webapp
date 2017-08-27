@@ -1,20 +1,17 @@
 import EventEmitter from 'events';
 
 export default class EmpireService extends EventEmitter {
-  constructor($, configP, browserHistory) {
+  constructor($, serviceUrl) {
     super();
 
     this.$ = $;
-    this.configP = configP;
-    this.browserHistory = browserHistory;
+    this.serviceUrl = serviceUrl;
   }
 
   auth(provider) {
-    const configP = this.configP;
     return () => {
-      return configP.then(config => {
-        window.open(`${config.empireServiceUrl}/auth/${provider}`);
-      });
+      const url = this.url(`/auth/${provider}`);
+      window.open(url);
     };
   }
 
@@ -52,21 +49,23 @@ export default class EmpireService extends EventEmitter {
   }
 
   // Helpers
-  call(method, path, data) {
-    return this.configP.then(config => {
-      const url = config.empireServiceUrl + path;
-      return new Promise((resolve, reject) => {
-        this.$.ajax(url, {
-          method,
-          data,
-          success: resolve,
-          error: res => {
-            if(res.status === 401)
-              this.emit('unauthorized');
+  url(path) {
+    return this.serviceUrl + path;
+  }
 
-            reject(res);
-          }
-        });
+  call(method, path, data) {
+    return new Promise((resolve, reject) => {
+      const url = this.url(path);
+      this.$.ajax(url, {
+        method,
+        data,
+        success: resolve,
+        error: res => {
+          if(res.status === 401)
+            this.emit('unauthorized');
+
+          reject(res);
+        }
       });
     });
   }

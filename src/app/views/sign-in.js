@@ -18,24 +18,22 @@ export default class SignIn extends Component {
 
     this.onMessage = e => {
       const {origin, data} = e;
-      this.empireService.configP.then(config => {
-        const empireServiceOrigin = config.empireServiceUrl.match(/\w+:\/\/[^/]*/);
+      const empireServiceOrigin = this.empireServiceUrl.match(/\w+:\/\/[^/]*/);
 
-        const ok = origin.startsWith(empireServiceOrigin);
-        if(!ok)
-          throw new Error(`Origin of Auth Message [${origin}] does not match empireServiceOrigin: ${empireServiceOrigin}`);
+      const ok = origin.startsWith(empireServiceOrigin);
+      if(!ok)
+        throw new Error(`Origin of Auth Message [${origin}] does not match empireServiceOrigin: ${empireServiceOrigin}`);
 
-        switch (data.type) {
-          case 'auth':
-            this.onAuth(data);
-            break;
-          case 'auth_failure':
-            this.onAuthFailure(data);
-            break;
-          default:
-            throw new Error(`Invalid type from auth: ${data.type}`);
-        }
-      });
+      switch (data.type) {
+        case 'auth':
+          this.onAuth(data);
+          break;
+        case 'auth_failure':
+          this.onAuthFailure(data);
+          break;
+        default:
+          throw new Error(`Invalid type from auth: ${data.type}`);
+      }
     };
 
     this.onAuth = token => {
