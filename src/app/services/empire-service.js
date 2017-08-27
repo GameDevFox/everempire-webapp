@@ -1,9 +1,9 @@
-import moment from 'moment';
+import EventEmitter from 'events';
 
-const renewTokenMsBefore = 60000;
-
-export default class EmpireService {
+export default class EmpireService extends EventEmitter {
   constructor($, configP, browserHistory) {
+    super();
+
     this.$ = $;
     this.configP = configP;
     this.browserHistory = browserHistory;
@@ -16,48 +16,6 @@ export default class EmpireService {
         window.open(`${config.empireServiceUrl}/auth/${provider}`);
       });
     };
-  }
-
-  loadToken() {
-    const token = this.token;
-    if(token)
-      this.onToken(token);
-  }
-
-  renewToken() {
-    return this.get('/me/token').then(token => {
-      this.onToken(token);
-    });
-  }
-
-  onToken(token) {
-    const expiresMs = moment(token.expires_at).diff(moment());
-    const renewTimeout = expiresMs - renewTokenMsBefore;
-
-    setTimeout(() => {
-      this.renewToken();
-    }, renewTimeout);
-
-    this.token = token;
-  }
-
-  get token() {
-    return JSON.parse(sessionStorage.getItem('token'));
-  }
-
-  set token(tokenData) {
-    let beforeSend;
-
-    if(tokenData) {
-      sessionStorage.setItem('token', JSON.stringify(tokenData));
-      beforeSend = xhr => {
-        xhr.setRequestHeader('Token', tokenData.token);
-      };
-    } else {
-      sessionStorage.removeItem('token');
-    }
-
-    this.$.ajaxSetup({beforeSend});
   }
 
   getProviders() {
@@ -73,25 +31,12 @@ export default class EmpireService {
     return this.get('/me');
   }
 
-  clearToken() {
-    this.token = undefined;
+  renewToken() {
+    return this.get('/me/token');
   }
 
-  routeToSignIn() {
-    this.browserHistory.push('/sign-in');
-  }
-
-  signOut(destroyToken = true) {
-    this.clearToken();
-    this.routeToSignIn();
-
-    return new Promise((resolve, reject) => {
-      if(destroyToken) {
-        this.del('/me/token').then(resolve, reject);
-      } else {
-        resolve();
-      }
-    });
+  deleteToken() {
+    return this.del('/me/token');
   }
 
   createWorld(data) {
@@ -116,10 +61,8 @@ export default class EmpireService {
           data,
           success: resolve,
           error: res => {
-            // Sign-out if unauthorized (401)
-            if(res.status === 401) {
-              this.signOut(false);
-            }
+            if(res.status === 401)
+              this.emit('unauthorized');
 
             reject(res);
           }

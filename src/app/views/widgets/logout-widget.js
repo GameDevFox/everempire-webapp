@@ -5,7 +5,7 @@ export default class LogoutWidget extends Component {
     super();
 
     this.onLogout = () => {
-      this.empireService.signOut();
+      this.tokenService.signOut();
     };
   }
 

@@ -1,5 +1,5 @@
 import configP from './config';
-import empireService from './empire-service';
+import {tokenService} from './services';
 
 import Genesis, {Events} from '../services/genesis';
 import Commands from '../common/commands';
@@ -36,7 +36,7 @@ genesis.on(Commands.PONG, args => {
 
 configP.then(config => {
   genesis.connect(config.genesisUrl);
-  genesis.cmd(Commands.AUTH, {token: empireService.token});
+  genesis.cmd(Commands.AUTH, {token: tokenService.token});
 });
 
 export default genesis;

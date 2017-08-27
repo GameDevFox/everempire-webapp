@@ -2,7 +2,7 @@ import React from 'react';
 import {browserHistory, IndexRoute, Router, Route} from 'react-router';
 
 import configP from './config';
-import empireService from './empire-service';
+import {tokenService} from './services';
 import {Root, SignIn, Home, Game, Worlds} from './views';
 
 configP.then(config => {
@@ -10,9 +10,9 @@ configP.then(config => {
 });
 
 const enterHook = function(nextState, replace, callback) {
-  if(nextState.location.pathname !== '/sign-in' && !empireService.token)
+  if(nextState.location.pathname !== '/sign-in' && !tokenService.token)
     replace('/sign-in');
-  if(nextState.location.pathname === '/sign-in' && empireService.token)
+  if(nextState.location.pathname === '/sign-in' && tokenService.token)
     replace('/');
 
   callback();

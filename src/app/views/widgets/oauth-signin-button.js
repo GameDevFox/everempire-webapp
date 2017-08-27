@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 
 import _ from 'lodash';
 
-// CSS
-import 'bootstrap-social/bootstrap-social.css';
-
 export default class OAuthSignInButton extends Component {
   render() {
     const provider = this.props.provider;

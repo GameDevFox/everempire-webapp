@@ -4,8 +4,8 @@ import bind from '../utils/class-bind';
 
 import * as game from '../game/game';
 
+import {empireService, tokenService} from './services';
 import genesis from './genesis';
-import empireService from './empire-service';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -18,12 +18,12 @@ import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
 // Widgets
-const LogoutWidget = bind(LogoutWidgetB, {browserHistory, empireService});
+const LogoutWidget = bind(LogoutWidgetB, {browserHistory, tokenService});
 const NavigationBar = bind(NavigationBarB, {empireService, LogoutWidget});
 
 // Top Level
 export const Root = bind(RootB, {game, genesis, NavigationBar});
-export const SignIn = bind(SignInB, {browserHistory, empireService});
+export const SignIn = bind(SignInB, {browserHistory, empireService, tokenService});
 
 // Views
 export const Home = bind(HomeB, {genesis});

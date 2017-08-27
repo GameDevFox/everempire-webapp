@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import OAuthSignInButton from './widgets/oauth-signin-button';
-import empireService from '../factory/empire-service';
 
 const MESSAGE = 'message';
 
@@ -41,7 +40,7 @@ export default class SignIn extends Component {
 
     this.onAuth = token => {
       console.log(`Login succeeded!`);
-      this.empireService.onToken(token);
+      this.tokenService.onToken(token);
 
       this.empireService.getMe().then(me => {
         console.log('Me', me);
@@ -80,7 +79,7 @@ export default class SignIn extends Component {
 
     const providerButtons = this.state.providers.map(provider => {
       const providerClass = providerClassMap[provider] || provider;
-      return <OAuthSignInButton key={provider} provider={providerClass} onClick={empireService.auth(provider)}/>;
+      return <OAuthSignInButton key={provider} provider={providerClass} onClick={this.empireService.auth(provider)}/>;
     });
 
     return (
