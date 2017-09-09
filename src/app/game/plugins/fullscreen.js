@@ -2,10 +2,10 @@ import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
 
-export default function build({input, scale}) {
+export default function build({ input, scale }) {
   const plugin = new Phaser.Plugin();
 
-  const {ALT, ENTER} = Phaser.KeyCode;
+  const { ALT, ENTER } = Phaser.KeyCode;
 
   plugin.init = () => {
     scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export default class Worlds extends Component {
   constructor() {
@@ -10,17 +10,17 @@ export default class Worlds extends Component {
     };
 
     this.onNameChange = e => {
-      this.setState({name: e.target.value});
+      this.setState({ name: e.target.value });
     };
 
     this.onCreateWorld = () => {
-      this.setState({name: ''});
+      this.setState({ name: '' });
       const name = this.state.name;
-      this.empireService.createWorld({name})
+      this.empireService.createWorld({ name })
         .then(world => {
           const worlds = this.state.worlds;
           worlds.push(world);
-          this.setState({worlds});
+          this.setState({ worlds });
         });
     };
 
@@ -30,7 +30,7 @@ export default class Worlds extends Component {
           .then(() => {
             let worlds = this.state.worlds;
             worlds = worlds.filter(world => world.id !== worldId);
-            this.setState({worlds});
+            this.setState({ worlds });
           });
       };
     };
@@ -55,15 +55,13 @@ export default class Worlds extends Component {
     ];
   }
 
-  componentWillMount() {
-    this.empireService.getMe()
-      .then(me => this.setState({meId: me.id}));
-    this.empireService.getWorlds()
-      .then(worlds => this.setState({worlds}));
+  componentDidMount() {
+    this.empireService.getMe().then(me => this.setState({ meId: me.id }));
+    this.empireService.getWorlds().then(worlds => this.setState({ worlds }));
   }
 
   render() {
-    const {TableList} = this;
+    const { TableList } = this;
 
     return (
       <div className="worlds">

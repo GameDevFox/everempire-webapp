@@ -61,6 +61,7 @@
     "sass-loader": "^6.0.1",
     "script-loader": "^0.7.0",
     "should": "^11.2.1",
+    "sinon": "^3.2.1",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.1",

@@ -2,7 +2,7 @@ import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
 
-const {Point} = Phaser;
+const { Point } = Phaser;
 
 import VectorPath from './vector-path';
 
@@ -23,15 +23,15 @@ describe('VectorPath', () => {
     it('should work', () => {
       const vectorPath = new VectorPath({
         time: 10,
-        pos: {x: 100, y: 100},
-        initVel: {x: 100, y: 0},
-        finalVel: {x: 0, y: -100},
+        pos: { x: 100, y: 100 },
+        initVel: { x: 100, y: 0 },
+        finalVel: { x: 0, y: -100 },
         accel: 100
       });
 
       let pos;
       pos = vectorPath.getPos(10);
-      pos.should.have.properties({x: 100, y: 100});
+      pos.should.have.properties({ x: 100, y: 100 });
 
       pos = vectorPath.getPos(10.5);
       pos.x.should.be.approximately(141.1, 0.1);
@@ -63,15 +63,15 @@ describe('VectorPath', () => {
     it('should work', () => {
       const vectorPath = new VectorPath({
         time: 10,
-        pos: {x: 100, y: 100},
-        initVel: {x: 100, y: 0},
-        finalVel: {x: 0, y: -100},
+        pos: { x: 100, y: 100 },
+        initVel: { x: 100, y: 0 },
+        finalVel: { x: 0, y: -100 },
         accel: 100
       });
 
       let velocity;
       velocity = vectorPath.getVelocity(10);
-      velocity.should.have.properties({x: 100, y: 0});
+      velocity.should.have.properties({ x: 100, y: 0 });
 
       velocity = vectorPath.getVelocity(10.5);
       velocity.x.should.be.approximately(64.6, 0.1);
@@ -86,10 +86,10 @@ describe('VectorPath', () => {
       velocity.y.should.be.approximately(-70.7, 0.1);
 
       velocity = vectorPath.getVelocity(11.414213562373095);
-      velocity.should.have.properties({x: 0, y: -100});
+      velocity.should.have.properties({ x: 0, y: -100 });
 
       velocity = vectorPath.getVelocity(11.5);
-      velocity.should.have.properties({x: 0, y: -100});
+      velocity.should.have.properties({ x: 0, y: -100 });
     });
   });
 });

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import _ from 'lodash';
-import {titleCase} from 'change-case';
+import { titleCase } from 'change-case';
 
 export default class TableList extends Component {
   buildHeader(cols) {
@@ -40,7 +40,7 @@ export default class TableList extends Component {
   }
 
   render() {
-    const {rows, cols} = this.props;
+    const { rows, cols } = this.props;
 
     const header = this.buildHeader(cols);
     const tableRows = this.buildRows(rows, cols);

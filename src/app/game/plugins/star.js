@@ -6,13 +6,14 @@ import _ from 'lodash';
 import Commands from '../../common/commands';
 import VectorPath from '../util/vector-path';
 
-const {Plugin, Point} = Phaser;
+const { Plugin, Point } = Phaser;
 
 const TWEEN_TIME = 1;
 const easeOutCubic = t => ((--t) * t * t) + 1;
 
-export default function build(game, genesis) {
-  const {debug, input, time} = game;
+// TODOS: This whole class needs a good refactoring
+export default function build(game, genesisService) {
+  const { debug, input, time } = game;
 
   const plugin = new Plugin();
 
@@ -22,11 +23,11 @@ export default function build(game, genesis) {
   let playerStar;
   let vectorPath;
 
-  genesis.on(Commands.PLAYER_UPDATE, update => {
-    const {sid, vectorPath: newVectorPath} = update;
+  genesisService.session().commands.on(Commands.PLAYER_UPDATE, msg => {
+    const { sid, vectorPath: newVectorPath } = msg.data;
 
     // Adjust time for offset
-    newVectorPath.time -= genesis.offset;
+    newVectorPath.time -= genesisService.offset();
 
     const playerData = players[sid];
     if(playerData === undefined) {
@@ -37,7 +38,7 @@ export default function build(game, genesis) {
       };
       players[sid] = data;
     } else {
-      const {star, vectorPath, lagVectorPath} = playerData;
+      const { star, vectorPath, lagVectorPath } = playerData;
       const curTime = time.time / 1000;
 
       vectorPath.copyFrom(newVectorPath);
@@ -53,8 +54,8 @@ export default function build(game, genesis) {
     playerStar = createStar(game);
 
     const curTime = time.time / 1000;
-    const pos = {x: 800 / 2, y: 450 / 2};
-    vectorPath = new VectorPath({time: curTime, pos});
+    const pos = { x: 800 / 2, y: 450 / 2 };
+    vectorPath = new VectorPath({ time: curTime, pos });
   };
 
   plugin.update = () => {
@@ -67,9 +68,9 @@ export default function build(game, genesis) {
 
       // Adjust time for offset
       const finalVactorPath = new VectorPath(vectorPath);
-      finalVactorPath.time += genesis.offset;
+      finalVactorPath.time += genesisService.offset();
 
-      genesis.cmd(Commands.PLAYER_UPDATE, finalVactorPath);
+      genesisService.updatePlayer(finalVactorPath);
     }
 
     // Update player star
@@ -78,7 +79,7 @@ export default function build(game, genesis) {
 
     // Update remote stars
     _.each(players, playerData => {
-      const {star, vectorPath, lagVectorPath} = playerData;
+      const { star, vectorPath, lagVectorPath } = playerData;
 
       const pos = vectorPath.getPos(curTime);
       const lagPos = lagVectorPath.getPos(curTime);

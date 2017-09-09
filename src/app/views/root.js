@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class Root extends Component {
   componentDidMount() {
-    this.game.init('game', this.genesis);
+    this.game.init('game', this.genesisService);
   }
 
   render() {
-    const {NavigationBar} = this;
+    const { NavigationBar } = this;
 
     return (
       <div>

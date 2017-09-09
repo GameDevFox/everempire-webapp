@@ -8,9 +8,9 @@ import buildDebugPlugin from './plugins/debug';
 import buildFullscreenPlugin from './plugins/fullscreen';
 import buildStarPlugin from './plugins/star';
 
-export function init(parent, genesis) {
+export function init(parent, genesisService) {
   const parentId = $(`#${parent}`).length ? parent : 'hidden-game';
-  window.game = createGame(parentId, genesis);
+  window.game = createGame(parentId, genesisService);
 }
 
 export function load(parent) {
@@ -29,15 +29,15 @@ export function unload(parent) {
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 450;
 
-export function createGame(parent, genesis) {
+export function createGame(parent, genesisService) {
   return new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, parent, {
     preload: game => {
       game.load.image('star', 'assets/star.png');
     },
 
     create: game => {
-      const {input, plugins, stage, physics} = game;
-      const {TILDE} = Phaser.KeyCode;
+      const { input, plugins, stage, physics } = game;
+      const { TILDE } = Phaser.KeyCode;
 
       // Set game properties
       stage.backgroundColor = '#808080';
@@ -49,7 +49,7 @@ export function createGame(parent, genesis) {
       plugins.add(fullscreenPlugin);
 
       // Debug plugin
-      const debugPlugin = buildDebugPlugin({debug: game.debug, time: game.time, genesis});
+      const debugPlugin = buildDebugPlugin({ debug: game.debug, time: game.time, genesisService });
       plugins.add(debugPlugin);
       debugPlugin.position.set(10, 60);
       debugPlugin.visible = false;
@@ -59,7 +59,7 @@ export function createGame(parent, genesis) {
       });
 
       // Star plugin
-      const starPlugin = buildStarPlugin(game, genesis);
+      const starPlugin = buildStarPlugin(game, genesisService);
       plugins.add(starPlugin);
     },
 

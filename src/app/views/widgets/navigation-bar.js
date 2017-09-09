@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 export default class NavigationBar extends Component {
   constructor() {
@@ -14,18 +14,18 @@ export default class NavigationBar extends Component {
     this.empireService.getMe()
       .then(me => {
         const userName = me.name || '...';
-        this.setState({userName});
+        this.setState({ userName });
       });
   }
 
   render() {
-    const {LogoutWidget} = this;
+    const { LogoutWidget } = this;
 
-    const {userName} = this.state;
+    const { userName } = this.state;
 
     return (
       <div className="navigation-bar">
-        <div className="site-name">{this.state.site}</div>
+        <div className="site-name">{ this.state.site }</div>
 
         <div className="menu">
           <Link to="/">Home</Link>
@@ -34,7 +34,7 @@ export default class NavigationBar extends Component {
         </div>
 
         <div className="user">
-          <b>{userName}</b>
+          <b>{ userName }</b>
           <LogoutWidget/>
         </div>
       </div>

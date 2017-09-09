@@ -1,16 +1,15 @@
 import React from 'react';
 
-import 'should';
 import $ from '../../test/test-query';
-import {renderToElement} from '../../test/react-utils';
+import { renderToElement } from '../../test/react-utils';
 
 import TableList from './table-list';
 
 describe('TableList', () => {
   let table;
   const rows = [
-    {name: 'Adam', gold: 100, data: {email: 'adam@gmail.com'}, colors: ['white', 'red']},
-    {name: 'Baron', gold: 200, data: {email: 'baron@everempire.com'}, colors: ['blue', 'black', 'yellow']}
+    { name: 'Adam', gold: 100, data: { email: 'adam@gmail.com' }, colors: ['white', 'red'] },
+    { name: 'Baron', gold: 200, data: { email: 'baron@everempire.com' }, colors: ['blue', 'black', 'yellow'] }
   ];
 
   it('should throw error on invalid column definition', () => {

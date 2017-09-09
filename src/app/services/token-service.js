@@ -1,17 +1,14 @@
+import EventEmitter from 'events';
 import moment from 'moment';
 
-const renewTokenMsBefore = 60000;
+const renewTokenMsBefore = 60000; // 1 Minute
 
-export default class TokenService {
-  constructor($, empireService, browserHistory) {
-    this.$ = $;
+export default class TokenService extends EventEmitter {
+  constructor(jQuery, empireService) {
+    super();
+
+    this.jQuery = jQuery;
     this.empireService = empireService;
-    this.browserHistory = browserHistory;
-
-    // Load token if it exists
-    const token = this.token;
-    if(token)
-      this.onToken(token);
   }
 
   get token() {
@@ -19,47 +16,32 @@ export default class TokenService {
   }
 
   set token(tokenData) {
-    let beforeSend;
+    const renewTimeout = this.getRenewTimeout(tokenData.expires_at);
+    setTimeout(() => this.renew(), renewTimeout);
 
-    if(tokenData) {
-      sessionStorage.setItem('token', JSON.stringify(tokenData));
-      beforeSend = xhr => {
+    sessionStorage.setItem('token', JSON.stringify(tokenData));
+    this.jQuery.ajaxSetup({
+      beforeSend: xhr => {
         xhr.setRequestHeader('Token', tokenData.token);
-      };
-    } else {
-      sessionStorage.removeItem('token');
-    }
-
-    this.$.ajaxSetup({beforeSend});
+      }
+    });
   }
 
-  onToken(token) {
-    const expiresMs = moment(token.expires_at).diff(moment());
+  clear() {
+    sessionStorage.removeItem('token');
+    this.jQuery.ajaxSetup({ beforeSend: undefined });
+    return;
+  }
+
+  getRenewTimeout(expires) {
+    const expiresMs = moment(expires).diff(moment());
     const renewTimeout = expiresMs - renewTokenMsBefore;
-
-    setTimeout(() => {
-      this.renew();
-    }, renewTimeout);
-
-    this.token = token;
+    return renewTimeout;
   }
 
   renew() {
     return this.empireService.renewToken().then(token => {
-      this.onToken(token);
-    });
-  }
-
-  signOut(destroyToken = true) {
-    this.token = undefined;
-    this.browserHistory.push('/sign-in');
-
-    return new Promise((resolve, reject) => {
-      if(destroyToken) {
-        this.empireService.deleteToken().then(resolve, reject);
-      } else {
-        resolve();
-      }
+      this.token = token;
     });
   }
 }

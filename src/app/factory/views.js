@@ -1,13 +1,10 @@
-import {browserHistory} from 'react-router';
+import { browserHistory } from 'react-router';
 
 import bind from '../utils/class-bind';
 
 import * as game from '../game/game';
 
-import configP from './config';
-
-import {empireServiceP, tokenServiceP} from './services';
-import genesisP from './genesis';
+import { empireServiceP, sessionServiceP, genesisServiceP } from './services';
 
 import RootB from '../views/root.js';
 import SignInB from '../views/sign-in';
@@ -19,22 +16,20 @@ import LogoutWidgetB from '../views/widgets/logout-widget';
 import NavigationBarB from '../views/widgets/navigation-bar';
 import TableList from '../views/widgets/table-list';
 
-const viewP = Promise.all([configP, empireServiceP, tokenServiceP, genesisP])
-  .then(([config, empireService, tokenService, genesis]) => {
-    const {empireServiceUrl} = config;
-
+const viewP = Promise.all([empireServiceP, sessionServiceP, genesisServiceP])
+  .then(([empireService, sessionService, genesisService]) => {
     // Widgets
-    const LogoutWidget = bind(LogoutWidgetB, {browserHistory, tokenService});
-    const NavigationBar = bind(NavigationBarB, {empireService, LogoutWidget});
+    const LogoutWidget = bind(LogoutWidgetB, { browserHistory, sessionService });
+    const NavigationBar = bind(NavigationBarB, { empireService, LogoutWidget });
 
     // Top Level
-    const Root = bind(RootB, {game, genesis, NavigationBar});
-    const SignIn = bind(SignInB, {browserHistory, empireService, tokenService, empireServiceUrl});
+    const Root = bind(RootB, { game, genesisService, NavigationBar });
+    const SignIn = bind(SignInB, { browserHistory, empireService, sessionService });
 
     // Views
-    const Home = bind(HomeB, {genesis});
-    const Game = bind(GameB, {game});
-    const Worlds = bind(WorldsB, {empireService, TableList});
+    const Home = bind(HomeB, { genesisService });
+    const Game = bind(GameB, { game });
+    const Worlds = bind(WorldsB, { empireService, TableList });
 
     return [Root, SignIn, Home, Game, Worlds];
   }

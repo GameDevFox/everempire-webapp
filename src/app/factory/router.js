@@ -1,7 +1,7 @@
 import React from 'react';
-import {browserHistory, IndexRoute, Router, Route} from 'react-router';
+import { browserHistory, IndexRoute, Router, Route } from 'react-router';
 
-import {tokenServiceP} from './services';
+import { tokenServiceP } from './services';
 import viewP from './views';
 
 const routerP = Promise.all([tokenServiceP, viewP]).then(([tokenService, views]) => {

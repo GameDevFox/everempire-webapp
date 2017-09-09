@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export default class LogoutWidget extends Component {
   constructor() {
     super();
 
     this.onLogout = () => {
-      this.tokenService.signOut();
+      this.sessionService.signOut();
     };
   }
 

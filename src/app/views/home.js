@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export default class Home extends Component {
   constructor() {
@@ -10,12 +10,12 @@ export default class Home extends Component {
 
     this.onMsgChange = event => {
       const message = event.target.value;
-      this.setState({message});
+      this.setState({ message });
     };
     this.onMsgClick = () => {
       const message = this.state.message;
       console.log(message);
-      this.genesis.cmd('set', {message});
+      this.genesisService.chat(message);
     };
   }
 
