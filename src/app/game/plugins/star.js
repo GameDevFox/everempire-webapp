@@ -23,7 +23,7 @@ export default function build(game, genesisService) {
   let playerStar;
   let vectorPath;
 
-  genesisService.session().commands.on(Commands.PLAYER_UPDATE, msg => {
+  genesisService.channel().commands.on(Commands.PLAYER_UPDATE, msg => {
     const { sid, vectorPath: newVectorPath } = msg.data;
 
     // Adjust time for offset

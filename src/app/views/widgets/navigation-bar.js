@@ -11,6 +11,7 @@ export default class NavigationBar extends Component {
   }
 
   componentWillMount() {
+    // TODOS: Pass in getMe() directly
     this.empireService.getMe()
       .then(me => {
         const userName = me.name || '...';
@@ -20,7 +21,6 @@ export default class NavigationBar extends Component {
 
   render() {
     const { LogoutWidget } = this;
-
     const { userName } = this.state;
 
     return (

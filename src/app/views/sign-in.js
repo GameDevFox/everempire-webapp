@@ -16,7 +16,7 @@ export default class SignIn extends Component {
 
     this.signIn = function(provider) {
       return () => {
-        this.sessionService.signIn(provider);
+        this.channelService.signIn(provider);
       };
     };
   }

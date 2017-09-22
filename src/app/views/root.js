@@ -9,6 +9,8 @@ export default class Root extends Component {
   render() {
     const { NavigationBar } = this;
 
+    // TODOS: Move hidden-game to index.html to fix race condition error
+    // (i.e. phaser getting rendered at bottom by default)
     return (
       <div>
         <div id="hidden-game"/>
