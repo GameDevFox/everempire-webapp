@@ -10,7 +10,7 @@ import LogoutWidget from './logout-widget';
 describe('LogoutWidget', () => {
   it('should call signOut() on click', () => {
     const spy = sinon.spy();
-    const TestLogoutWidget = bind(LogoutWidget, { channelService: { signOut: spy } });
+    const TestLogoutWidget = bind(LogoutWidget, { sessionService: { signOut: spy } });
 
     const logoutWidget = mount(<TestLogoutWidget/>);
     logoutWidget.find('a').simulate('click');

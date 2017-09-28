@@ -1,6 +1,6 @@
 const MESSAGE = 'message';
 
-export default class ChannelService {
+export default class SessionService {
   constructor(browserHistory, empireService, tokenService, // eslint-disable-line max-params
               genesisService, empireServiceUrl) {
     this.browserHistory = browserHistory;

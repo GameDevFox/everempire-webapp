@@ -8,7 +8,7 @@ import Channel from '../common/channel';
 
 import GenesisService from '../services/genesis-service';
 import TokenService from '../services/token-service';
-import ChannelService from '../services/channel-service';
+import SessionService from '../services/session-service';
 
 import jQuery from 'jquery';
 import configP from './config';
@@ -36,17 +36,17 @@ const clientRestServiceP = configP.then(config => ClientRestService(config.empir
 const empireServiceP = clientRestServiceP.then(clientRestService => EmpireService(clientRestService));
 const tokenServiceP = empireServiceP.then(empireService => new TokenService(jQuery, empireService));
 
-const channelServiceP =
+const sessionServiceP =
   Promise.all([empireServiceP, tokenServiceP, genesisServiceP, configP])
     .then(([empireService, tokenService, genesisService, config]) => {
-      return new ChannelService(browserHistory, empireService, tokenService, genesisService, config.empireServiceUrl);
+      return new SessionService(browserHistory, empireService, tokenService, genesisService, config.empireServiceUrl);
     });
 
-Promise.all([clientRestServiceP, channelServiceP]).then(([clientRestService, channelService]) => {
+Promise.all([clientRestServiceP, sessionServiceP]).then(([clientRestService, sessionService]) => {
   clientRestService.on('unauthorized', () => {
     console.log('Invalid token, returning to sign in page');
-    channelService.signOut(false);
+    sessionService.signOut(false);
   });
 });
 
-export { empireServiceP, channelServiceP, tokenServiceP, genesisServiceP };
+export { empireServiceP, sessionServiceP, tokenServiceP, genesisServiceP };

@@ -6,7 +6,7 @@ export default class LogoutWidget extends Component {
 
     this.onLogout = () => {
       // TODOS: Pass in signOut() directly
-      this.channelService.signOut();
+      this.sessionService.signOut();
     };
   }
 
