@@ -236,6 +236,8 @@ describe('Channel', () => {
       const spy = sinon.spy();
       clientChannel.on(Events.CHANNEL, spy);
 
+      throw new Error('Hello');
+
       serverChannel.channel();
       spy.called.should.be.false();
     });

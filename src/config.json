@@ -1,4 +1,4 @@
 {
-  "empireServiceUrl": "EMPIRE_SERVICE_URL",
-  "genesisUrl": "GENESIS_URL"
+  "empireServiceUrl": "http://localhost:9292/api",
+  "genesisUrl": "ws://localhost:1127"
 }
