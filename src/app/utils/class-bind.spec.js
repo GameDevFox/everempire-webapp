@@ -18,7 +18,7 @@ describe('class bind', () => {
 
     const TestComponentB = bind(TestComponent, { alpha: 'first', beta: 'second' });
     const TestComponentC = bind(TestComponentB, { beta: 'another', delta: 'one', omega: 'final' });
-    renderToElement(<TestComponentC omega={'name'} extra={'gold'}/>);
+    renderToElement(<TestComponentC omega="name" extra="gold"/>);
 
     // alpha should come from B class
     // beta and delta should come from C class
